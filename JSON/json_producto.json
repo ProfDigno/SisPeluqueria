@@ -1,0 +1,8 @@
+{
+"max_por_comision":"15",
+"min_por_comision":"0",
+"order_select_prod":" desc;"
+"defauld_stock_minimo":"10",
+"defauld_stock_maximo":"50",
+"defauld_porcentaje_comision":"0"
+}

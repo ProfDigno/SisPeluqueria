@@ -1,0 +1,28 @@
+                                                
+ =========PELUQUERIA=========                   
+ VENTA:31      FEC:2022-04-09 00:03             
+ CLI: 2-Digno Alfredo                           
+ TEL: 0986799285                                
+ DIR: Area 5 M43, L18 Pdte Franco               
+ #=============================#                
+ PINTA UNA-pincel                               
+    1 X     20,000 =     20,000                 
+ PINTA UNA-color rojo                           
+    1 X     15,000 =     15,000                 
+ MANICURA-pintura                               
+    1 X     55,000 =     55,000                 
+ MANICURA-siliconado                            
+    1 X     80,000 =     80,000                 
+ PELU-blanqueado                                
+    2 X     80,000 =     160,000                
+                                                
+ #=============================#                
+                                                
+                                                
+ TOTAL :                 330,000                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                

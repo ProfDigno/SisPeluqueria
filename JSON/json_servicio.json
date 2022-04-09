@@ -1,0 +1,9 @@
+{
+"max_por_comision":"60",
+"min_por_comision":"1",
+"order_select_prod":" desc;",
+"defauld_descripcion":"Ninguna",
+"defauld_porcentaje":"40",
+"defauld_hora":"1",
+"defauld_minuto":"15"
+}

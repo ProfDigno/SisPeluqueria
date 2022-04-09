@@ -1,0 +1,25 @@
+                                                
+ =========CIERRE-CAJA=========                  
+          CODIGO:3                              
+ INICIO:       2022-04-08 20:48                 
+ FIN:          2022-04-08 20:50                 
+ #=============================#                
+ CAJA ABRIR:             15,000                 
+ TOTAL VENTA:            210,000                
+ #=============================#                
+ TOTAL GASTO:            0                      
+ TOTAL VALE:             0                      
+ TOTAL COMPRA:           0                      
+ #=============================#                
+ SISTEMA:                225,000                
+ CIERRE:                 225,000                
+ DIFERENCIA:             (0)                    
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
