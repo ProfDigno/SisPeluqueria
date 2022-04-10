@@ -1,6 +1,7 @@
 package FORMULARIO.DAO;
 
 import BASEDATO.EvenConexion;
+import CONFIGURACION.Global_datos;
 import FORMULARIO.ENTIDAD.funcionario_comision;
 import Evento.JasperReport.EvenJasperReport;
 import Evento.Jtable.EvenJtable;
@@ -18,6 +19,7 @@ public class DAO_funcionario_comision {
     EvenJasperReport rep = new EvenJasperReport();
     EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
     EvenFecha evefec = new EvenFecha();
+    private Global_datos gda = new Global_datos();
     private String mensaje_insert = "FUNCIONARIO_COMISION GUARDADO CORRECTAMENTE";
     private String mensaje_update = "FUNCIONARIO_COMISION MODIFICADO CORECTAMENTE";
     private String sql_insert = "INSERT INTO funcionario_comision(idfuncionario_comision,fecha_creado,creado_por,"
@@ -32,6 +34,9 @@ public class DAO_funcionario_comision {
     private String sql_cargar = "SELECT idfuncionario_comision,fecha_creado,creado_por,"
             + "fecha_pagado,monto_comision,monto_pagado,estado,descripcion,es_pagado,"
             + "fk_idfuncionario_grupo_comision,fk_iditem_venta,fk_idfuncionario,fk_idventa FROM funcionario_comision WHERE idfuncionario_comision=";
+    private String sql_update_cerrar = "UPDATE funcionario_comision "
+            + "SET fecha_pagado=?,monto_pagado=?,estado=?,es_pagado=?"
+            + " WHERE idfuncionario_comision=?;";
 
     public void insertar_funcionario_comision(Connection conn, funcionario_comision funco) {
         funco.setC1idfuncionario_comision(eveconn.getInt_ultimoID_mas_uno(conn, funco.getTb_funcionario_comision(), funco.getId_idfuncionario_comision()));
@@ -114,12 +119,12 @@ public class DAO_funcionario_comision {
     }
 
     public void actualizar_tabla_funcionario_comision(Connection conn, JTable tbltabla, int fk_idfuncionario_grupo_comision) {
-        String sql = "select fc.idfuncionario_comision as idf,\n"
+        String sql = "select fc.idfuncionario_comision as idf,fc.fk_idventa as ven,\n"
                 + "to_char(fc.fecha_creado,'yyyy-MM-dd HH24:MI') as fecha,fc.descripcion,\n"
-                + "to_char(fc.monto_comision,'999G999G999') as comision,"
-                + "to_char(fc.monto_pagado,'999G999G999') as pagado,"
+                + "TRIM(to_char(fc.monto_comision,'999G999G999')) as comision,"
+                + "TRIM(to_char(fc.monto_pagado,'999G999G999')) as pagado,"
                 + "fc.estado,\n"
-                + "case when fc.es_pagado=true then to_char(fc.fecha_pagado,'yyyy-MM-dd') else 'FALTA PAGAR' end as fecha   \n"
+                + "case when fc.es_pagado=true then to_char(fc.fecha_pagado,'yyyy-MM-dd HH24:MI') else 'FALTA PAGAR' end as fecha   \n"
                 + "from funcionario_comision fc \n"
                 + "where fc.fk_idfuncionario_grupo_comision=" + fk_idfuncionario_grupo_comision + " order by 1 desc;";
         eveconn.Select_cargar_jtable(conn, sql, tbltabla);
@@ -127,16 +132,64 @@ public class DAO_funcionario_comision {
     }
 
     public void ancho_tabla_funcionario_comision(JTable tbltabla) {
-        int Ancho[] = {5, 15, 40, 10, 10, 8, 12};
+        int Ancho[] = {5, 5, 15, 33, 9, 9, 8, 15};
         evejt.setAnchoColumnaJtable(tbltabla, Ancho);
     }
 
     public void update_total_comision_funcionario(Connection conn, int fk_idfuncionario) {
-        String sql = "update funcionario set total_comision=(select sum(fc.monto_comision-fc.monto_pagado) as saldo\n"
+        String sql = "update funcionario set total_comision=(select coalesce(sum(fc.monto_comision-fc.monto_pagado),0) as saldo\n"
                 + "from funcionario_comision fc,funcionario_grupo_comision fgc  \n"
                 + "where fgc.idfuncionario_grupo_comision=fc.fk_idfuncionario_grupo_comision  \n"
                 + "and fgc.es_abierto=true \n"
-                + "and fgc.fk_idfuncionario="+fk_idfuncionario+") where idfuncionario="+fk_idfuncionario+"; ";
+                + "and fc.estado='" + gda.getEstado_abierto() + "' \n"
+                + "and fgc.fk_idfuncionario=" + fk_idfuncionario + ") where idfuncionario=" + fk_idfuncionario + "; ";
         eveconn.SQL_execute_libre(conn, sql);
     }
+
+    public void update_total_comision_funcionario_de_venta(Connection conn, int fk_idveta) {
+        String sql = "update funcionario  set total_comision=(select coalesce(sum(fc.monto_comision-fc.monto_pagado),0) as saldo\n"
+                + "from funcionario_comision fc,funcionario_grupo_comision fgc  \n"
+                + "where fgc.idfuncionario_grupo_comision=fc.fk_idfuncionario_grupo_comision  \n"
+                + "and fgc.es_abierto=true \n"
+                + "and fc.estado='" + gda.getEstado_abierto() + "' \n"
+                + "and fgc.fk_idfuncionario=iv.fk_idfuncionario) \n"
+                + "from item_venta iv\n"
+                + "where iv.fk_idfuncionario=idfuncionario \n"
+                + "and  idfuncionario=iv.fk_idfuncionario\n"
+                + "and iv.fk_idventa="+fk_idveta;
+        eveconn.SQL_execute_libre(conn, sql);
+    }
+
+    public void update_funcionario_comision_PAGAR(Connection conn, funcionario_comision funco) {
+        String titulo = "update_funcionario_comision_PAGAR";
+        PreparedStatement pst = null;
+        try {
+            pst = conn.prepareStatement(sql_update_cerrar);
+            pst.setTimestamp(1, evefec.getTimestamp_sistema());
+            pst.setDouble(2, funco.getC6monto_pagado());
+            pst.setString(3, funco.getC7estado());
+            pst.setBoolean(4, funco.getC9es_pagado());
+            pst.setInt(5, funco.getC1idfuncionario_comision());
+            pst.execute();
+            pst.close();
+        } catch (Exception e) {
+            evemen.mensaje_error(e, sql_update_cerrar + "\n" + funco.toString(), titulo);
+        }
+    }
+
+    public void anular_update_funcionario_comision(Connection conn, funcionario_comision funco) {
+        String titulo = "anular_update_funcionario_comision";
+        String sql = "UPDATE funcionario_comision SET estado=? WHERE fk_idventa=?;";
+        PreparedStatement pst = null;
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, funco.getC7estado());
+            pst.setInt(2, funco.getC13fk_idventa());
+            pst.execute();
+            pst.close();
+        } catch (Exception e) {
+            evemen.mensaje_error(e, sql + "\n" + funco.toString(), titulo);
+        }
+    }
+
 }

@@ -343,6 +343,8 @@
                       <Component id="btnfuncionario" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btncliente" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btncaja_cierre" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -355,6 +357,7 @@
                           <Component id="btnservicio" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnfuncionario" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btncliente" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btncaja_cierre" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnventa" min="-2" max="-2" attributes="0"/>
@@ -402,6 +405,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnventaActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btncaja_cierre">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="CAJA CIERRE"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btncaja_cierreActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

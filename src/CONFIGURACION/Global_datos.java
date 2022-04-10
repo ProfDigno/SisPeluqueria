@@ -16,6 +16,8 @@ public class Global_datos {
         setFk_idusuario(1);
         setEstado_emitido("EMITIDO");
         setEstado_anulado("ANULADO");
+        setEstado_pagado("PAGADO");
+        setEstado_comision("COMISION");
         setPago_contado("CONTADO");
         setPago_credito("CREDITO");
         setEstado_abierto("ABIERTO");
@@ -27,13 +29,15 @@ public class Global_datos {
         setTbl_caja("CAJA");
         setCaja_abierto("A");
         setCaja_cierre("C");
-        
+        setCaja_anulado("N");
     }
     
     private static String estado_emitido;
     private static String estado_anulado;
     private static String estado_abierto;
     private static String estado_cerrado;
+    private static String estado_pagado;
+    private static String estado_comision;
     private static String pago_contado;
     private static String pago_credito;
     private static String creado_por;
@@ -45,6 +49,31 @@ public class Global_datos {
     private static String tbl_caja;
     private static String caja_cierre;
     private static String caja_abierto;
+    private static String caja_anulado;
+
+    public static String getEstado_comision() {
+        return estado_comision;
+    }
+
+    public static void setEstado_comision(String estado_comision) {
+        Global_datos.estado_comision = estado_comision;
+    }
+
+    public static String getCaja_anulado() {
+        return caja_anulado;
+    }
+
+    public static void setCaja_anulado(String caja_anulado) {
+        Global_datos.caja_anulado = caja_anulado;
+    }
+
+    public static String getEstado_pagado() {
+        return estado_pagado;
+    }
+
+    public static void setEstado_pagado(String estado_pagado) {
+        Global_datos.estado_pagado = estado_pagado;
+    }
 
     public static String getTbl_caja() {
         return tbl_caja;

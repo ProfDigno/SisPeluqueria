@@ -19,6 +19,7 @@ import java.text.ParseException;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
@@ -253,6 +254,8 @@ public class EvenFecha {
     }
 
     public void cargar_combobox_intervalo_fecha(JComboBox combo) {
+        DefaultComboBoxModel model = (DefaultComboBoxModel) combo.getModel();
+        model.removeAllElements();//eliminamos todo antes de cargar
         String fechas[] = {"HOY", "AYER",
             "ESTA SEMANA", "SEMANA  ANTERIOR",
             "ESTE MES", "MES ANTERIOR",

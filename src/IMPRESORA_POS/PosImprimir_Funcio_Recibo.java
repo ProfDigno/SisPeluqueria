@@ -24,43 +24,43 @@ import javax.swing.JTextArea;
  *
  * @author Digno
  */
-public class PosImprimir_Vale {
+public class PosImprimir_Funcio_Recibo {
 
     EvenConexion eveconn = new EvenConexion();
     EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
 //    private static json_config config = new json_config();
     ClaImpresoraPos pos = new ClaImpresoraPos();
-    private static String tk_idvale = "500";
-    private static String tk_fecha_emision = "08-03-2019";
-    private static String tk_descripcion = "la descripcion";
-    private static String tk_cliente = "el tipo de vale";
-    private static String tk_monto = "15.000";
-    private static String tk_usuario = "digno";
-    private static String tk_nombre_empresa = "";
-    private static String tk_ruta_archivo = "ticket_vale.txt";
+    private static String tk_idrecibo = "0";
+    private static String tk_fecha = "0";
+    private static String tk_descripcion = "0";
+    private static String tk_funcionario = "0";
+    private static String tk_monto_recibo = "0";
+    private static String tk_monto_letra = "0";
+    private static String tk_nombre_empresa = "PELUQUERIA";
+    private static String tk_ruta_archivo = "ticket_recibo.txt";
     private static FileInputStream inputStream = null;
-    private static String nombre_ticket = "-VALE";
-    private void cargar_datos_vale(Connection conn, int idvale) {
-        String titulo = "cargar_datos_vale";
-        String sql = "select v.idvale as idg,(cl.nombre) as cliente,\n"
-                + "v.descripcion as des_vale,\n"
-                + "to_char(v.fecha_emision,'yyyy-MM-dd HH:MI') as fecha, \n"
-                + "v.estado as estado,v.monto_vale as monto,\n"
-                + "TRIM(to_char(v.monto_vale,'999G999G999')) as monto_pos,\n"
-                + "us.nombre as usuario \n"
-                + "from vale v, cliente cl,usuario us   \n"
-                + "where v.fk_idcliente=cl.idcliente  \n"
-                + "and v.fk_idusuario=us.idusuario \n"
-                + "and v.idvale=" + idvale;
+    private static String nombre_ticket = "RECIBO";
+
+    private void cargar_datos_funcionario_recibo(Connection conn, int idfuncionario_recibo) {
+        String titulo = "cargar_datos_funcionario_recibo";
+        String sql = "select fr.idfuncionario_recibo as idfr,\n"
+                + "(f.nombre||' '||f.apellido)  as funcionario,\n"
+                + "fr.descripcion,\n"
+                + "to_char(fr.fecha_creado,'yyyy-MM-dd HH24:MI') as fecha,\n"
+                + "fr.estado,fr.monto_recibo as monto,\n"
+                + "to_char(fr.monto_recibo,'999G999G999') as monto_recibo,fr.monto_letra \n"
+                + "from funcionario_recibo fr ,funcionario f \n"
+                + "where fr.fk_idfuncionario=f.idfuncionario \n"
+                + "and fr.idfuncionario_recibo=" + idfuncionario_recibo;
         try {
             ResultSet rs = eveconn.getResulsetSQL(conn, sql, titulo);
             if (rs.next()) {
-                tk_idvale = rs.getString("idg");
-                tk_fecha_emision = rs.getString("fecha");
-                tk_descripcion = rs.getString("des_vale");
-                tk_cliente = rs.getString("cliente");
-                tk_monto = rs.getString("monto_pos");
-                tk_usuario = rs.getString("usuario");
+                tk_idrecibo = rs.getString("idfr");
+                tk_fecha = rs.getString("fecha");
+                tk_descripcion = rs.getString("descripcion");
+                tk_funcionario = rs.getString("funcionario");
+                tk_monto_recibo = rs.getString("monto_recibo");
+                tk_monto_letra = rs.getString("monto_letra");
             }
         } catch (Exception e) {
             evemen.mensaje_error(e, sql, titulo);
@@ -71,15 +71,15 @@ public class PosImprimir_Vale {
         String mensaje_impresora = "";
         String saltolinea = "\n";
         String tabular = "\t";
-        mensaje_impresora = mensaje_impresora + "=======" + "" + nombre_ticket+"========" + saltolinea;
-        mensaje_impresora = mensaje_impresora + "CODIGO:" + tk_idvale + saltolinea;
-        mensaje_impresora = mensaje_impresora + "FECHA: " + tk_fecha_emision + saltolinea;
-        mensaje_impresora = mensaje_impresora + "USUARIO: " + tk_usuario + saltolinea;
+        mensaje_impresora = mensaje_impresora + "=======" + "" + nombre_ticket + "========" + saltolinea;
+        mensaje_impresora = mensaje_impresora + "ID:" + tk_idrecibo + saltolinea;
+        mensaje_impresora = mensaje_impresora + "FECHA: " + tk_fecha + saltolinea;
         mensaje_impresora = mensaje_impresora + "==========================================" + saltolinea;
-        mensaje_impresora = mensaje_impresora + "DESCRIPCION: " + tk_descripcion + saltolinea;
-        mensaje_impresora = mensaje_impresora + "FUNCIO.: " + tk_cliente + saltolinea;
+        mensaje_impresora = mensaje_impresora + "DESCRIP: " + tk_descripcion + saltolinea;
+        mensaje_impresora = mensaje_impresora + "FUNCIO.: " + tk_funcionario + saltolinea;
         mensaje_impresora = mensaje_impresora + "==========================================" + saltolinea;
-        mensaje_impresora = mensaje_impresora + "TOTAL :" + tk_monto + saltolinea;
+        mensaje_impresora = mensaje_impresora + "TOTAL :" + tk_monto_recibo + saltolinea;
+        mensaje_impresora = mensaje_impresora + "LETRA: " + tk_monto_letra + saltolinea;
         return mensaje_impresora;
     }
 
@@ -92,15 +92,15 @@ public class PosImprimir_Vale {
         int tempfila = 0;
         int totalfila = 13;
         printer.setOutSize(totalfila, totalColumna);
-        printer.printTextWrap(1 + tempfila, 1, 1, totalColumna, "=============" + "" + nombre_ticket+"=============");
-        printer.printTextWrap(2 + tempfila, 2, 1, totalColumna, "CODIGO:" + tk_idvale);
-        printer.printTextWrap(2 + tempfila, 2, 20, totalColumna, "FECHA: " + tk_fecha_emision);
-        printer.printTextWrap(3 + tempfila, 3, 1, totalColumna, "USUARIO: " + tk_usuario);
+        printer.printTextWrap(1 + tempfila, 1, 1, totalColumna, "=============" + nombre_ticket + "=============");
+        printer.printTextWrap(2 + tempfila, 2, 1, totalColumna, "ID:" + tk_idrecibo);
+        printer.printTextWrap(2 + tempfila, 2, 20, totalColumna, "FECHA: " + tk_fecha);
         printer.printTextWrap(4 + tempfila, 4, 1, totalColumna, "==========================================");
-        printer.printTextWrap(5 + tempfila, 5, 1, 200, "DESCRIPCION: " + tk_descripcion);
-        printer.printTextWrap(6 + tempfila, 6, 1, 100, "FUNCIO.: " + tk_cliente);
+        printer.printTextWrap(5 + tempfila, 5, 1, 200, "DESCRIP: " + tk_descripcion);
+        printer.printTextWrap(6 + tempfila, 6, 1, 100, "FUNCIO.: " + tk_funcionario);
         printer.printTextWrap(7 + tempfila, 7, 1, totalColumna, "==========================================");
-        printer.printTextWrap(8 + tempfila, 8, 25, totalColumna, "TOTAL :" + tk_monto);
+        printer.printTextWrap(8 + tempfila, 8, 25, totalColumna, "TOTAL :" + tk_monto_recibo);
+        printer.printTextWrap(9 + tempfila, 9, 1, totalColumna, "LETRA: " + tk_monto_letra);
         printer.toFile(tk_ruta_archivo);
         try {
             inputStream = new FileInputStream(tk_ruta_archivo);
@@ -138,8 +138,8 @@ public class PosImprimir_Vale {
         }
     }
 
-    public void boton_imprimir_pos_VALE(Connection conn, int idvale) {
-        cargar_datos_vale(conn, idvale);
+    public void boton_imprimir_pos_funcionario_recibo(Connection conn, int idfuncionario_recibo) {
+        cargar_datos_funcionario_recibo(conn, idfuncionario_recibo);
         crear_mensaje_textarea_y_confirmar();
     }
 }

@@ -24,15 +24,27 @@ public class DAO_caja_detalle {
 //    String creado_por="sin-dato";
     private String mensaje_insert = "CAJA_DETALLE GUARDADO CORRECTAMENTE";
     private String mensaje_update = "CAJA_DETALLE MODIFICADO CORECTAMENTE";
-    private String sql_insert = "INSERT INTO caja_detalle(idcaja_detalle,fecha_creado,creado_por,descripcion,tabla_origen,estado,monto_cierre,cierre,in_monto_apertura,in_monto_venta,eg_monto_recibo_funcionario,eg_monto_gasto,eg_monto_compra,fk_idventa,fk_idfuncionario_recibo,fk_idgasto,fk_idcompra,fk_idusuario) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-    private String sql_update = "UPDATE caja_detalle SET fecha_creado=?,creado_por=?,descripcion=?,tabla_origen=?,estado=?,monto_cierre=?,cierre=?,in_monto_apertura=?,in_monto_venta=?,eg_monto_recibo_funcionario=?,eg_monto_gasto=?,eg_monto_compra=?,fk_idventa=?,fk_idfuncionario_recibo=?,fk_idgasto=?,fk_idcompra=?,fk_idusuario=? WHERE idcaja_detalle=?;";
+    private String sql_insert = "INSERT INTO caja_detalle(idcaja_detalle,fecha_creado,creado_por,descripcion,"
+            + "tabla_origen,estado,monto_cierre,cierre,"
+            + "in_monto_apertura,in_monto_venta,"
+            + "eg_monto_recibo_funcionario,eg_monto_gasto,eg_monto_compra,"
+            + "fk_idventa,fk_idfuncionario_recibo,fk_idgasto,fk_idcompra,fk_idusuario) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+    private String sql_update = "UPDATE caja_detalle SET fecha_creado=?,creado_por=?,descripcion=?,"
+            + "tabla_origen=?,estado=?,monto_cierre=?,cierre=?,"
+            + "in_monto_apertura=?,in_monto_venta=?,"
+            + "eg_monto_recibo_funcionario=?,eg_monto_gasto=?,eg_monto_compra=?,"
+            + "fk_idventa=?,fk_idfuncionario_recibo=?,fk_idgasto=?,fk_idcompra=?,fk_idusuario=? WHERE idcaja_detalle=?;";
     private String sql_select = "SELECT idcaja_detalle,fecha_creado,creado_por,descripcion,tabla_origen,estado,"
             + "monto_cierre,cierre,"
             + "in_monto_apertura,in_monto_venta,"
             + "eg_monto_recibo_funcionario,eg_monto_gasto,eg_monto_compra,"
             + "fk_idventa,fk_idfuncionario_recibo,fk_idgasto,fk_idcompra,fk_idusuario "
             + "FROM caja_detalle order by 1 desc;";
-    private String sql_cargar = "SELECT idcaja_detalle,fecha_creado,creado_por,descripcion,tabla_origen,estado,monto_cierre,cierre,in_monto_apertura,in_monto_venta,eg_monto_recibo_funcionario,eg_monto_gasto,eg_monto_compra,fk_idventa,fk_idfuncionario_recibo,fk_idgasto,fk_idcompra,fk_idusuario FROM caja_detalle WHERE idcaja_detalle=";
+    private String sql_cargar = "SELECT idcaja_detalle,fecha_creado,creado_por,descripcion,"
+            + "tabla_origen,estado,monto_cierre,cierre,"
+            + "in_monto_apertura,in_monto_venta,"
+            + "eg_monto_recibo_funcionario,eg_monto_gasto,eg_monto_compra,"
+            + "fk_idventa,fk_idfuncionario_recibo,fk_idgasto,fk_idcompra,fk_idusuario FROM caja_detalle WHERE idcaja_detalle=";
 
     public void insertar_caja_detalle(Connection conn, caja_detalle cjdet) {
         cjdet.setC1idcaja_detalle(eveconn.getInt_ultimoID_mas_uno(conn, cjdet.getTb_caja_detalle(), cjdet.getId_idcaja_detalle()));
@@ -61,7 +73,7 @@ public class DAO_caja_detalle {
             pst.execute();
             pst.close();
             evemen.Imprimir_serial_sql(sql_insert + "\n" + cjdet.toString(), titulo);
-            evemen.guardado_correcto(mensaje_insert, true);
+            evemen.guardado_correcto(mensaje_insert, false);
         } catch (Exception e) {
             evemen.mensaje_error(e, sql_insert + "\n" + cjdet.toString(), titulo);
         }
@@ -164,5 +176,21 @@ public class DAO_caja_detalle {
         String sql_update_cerrartodo="update caja_detalle set cierre='"+gda.getCaja_cierre()+"' "
                 + "where cierre='"+gda.getCaja_abierto()+"' ";
         eveconn.SQL_execute_libre(conn, sql_update_cerrartodo);
+    }
+    public void anular_venta_update_caja_detalle(Connection conn, caja_detalle cjdet) {
+        String titulo = "update_caja_detalle";
+        String sql_update = "UPDATE caja_detalle SET estado=?,cierre=? WHERE fk_idventa=?;";
+        PreparedStatement pst = null;
+        try {
+            pst = conn.prepareStatement(sql_update);
+            pst.setString(1, cjdet.getC6estado());
+            pst.setString(2, cjdet.getC8cierre());
+            pst.setInt(3, cjdet.getC14fk_idventa());
+            pst.execute();
+            pst.close();
+            evemen.Imprimir_serial_sql(sql_update + "\n" + cjdet.toString(), titulo);
+        } catch (Exception e) {
+            evemen.mensaje_error(e, sql_update + "\n" + cjdet.toString(), titulo);
+        }
     }
 }

@@ -81,10 +81,12 @@ public class FrmCaja_Cierre extends javax.swing.JInternalFrame {
     double caja_detalle_DIFERENCIA=0;
     double caja_detalle_CIERRE;
     int fk_idusuario=1;
+    private int idcaja_cierre;
     void abrir_formulario() {
-        this.setTitle(nombre_formulario);
         connLocal = cpt.getConnPosgres();
         evetbl.centrar_formulario(this);
+        idcaja_cierre = (eveconn.getInt_ultimoID_max(connLocal, ENTcc.getTb_caja_cierre(), ENTcc.getId_idcaja_cierre()));
+        this.setTitle(nombre_formulario+" ID:"+idcaja_cierre);
         caja_detalle_cantidad_total(gda.getTbl_caja(), "in_monto_apertura", txtcant_caja, jFabrir_caja);
         caja_detalle_cantidad_total(gda.getTbl_venta(), "in_monto_venta", txtcant_venta, jFtotal_venta);
         caja_detalle_cantidad_total(gda.getTbl_gasto(), "eg_monto_gasto", txtcant_gasto, jFtotal_gasto);
@@ -110,26 +112,11 @@ public class FrmCaja_Cierre extends javax.swing.JInternalFrame {
     }
 
     void cargar_datos_caja_cierre() {
-//        ENTcc.setC4estado("Abierto");
-//        ENTcc.setC5fk_idusuario(fk_idusuario);
         ENTcc.setC3creado_por(gda.getCreado_por());
         ENTcc.setC6estado(gda.getEstado_abierto());
     }
 
     void cargar_datos_caja_detalle(double saldo_cierre) {
-//        ENTcd.setC3descripcion("(VENTA) CAJA CERRAR:");
-//        ENTcd.setC4total_venta_efectivo(0);
-//        ENTcd.setC5total_venta_tarjeta(0);
-//        ENTcd.setC6total_compra(0);
-//        ENTcd.setC7total_gasto(0);
-//        ENTcd.setC8total_salario(0);
-//        ENTcd.setC9origen_tabla("CAJA_CERRAR");
-//        ENTcd.setC10fk_id_tabla(0);
-//        ENTcd.setC11estado("A");
-//        ENTcd.setC12monto_abrir(0);
-//        ENTcd.setC13monto_cerrar(saldo_cierre);
-//        ENTcd.setC14fk_idusuario(fk_idusuario);
-//        DAOcd.insertar_caja_detalle(connLocal, ENTcd);
         DAOcd.vaciar_caja_detalle(ENTcd);
         ENTcd.setC4descripcion(gda.getTbl_caja()+"=>"+nombre_formulario);
         ENTcd.setC5tabla_origen(gda.getTbl_caja());
@@ -142,8 +129,9 @@ public class FrmCaja_Cierre extends javax.swing.JInternalFrame {
     void boton_caja_cierre() {
         if (txtmonto_caja_cierre.getText().trim().length() > 0) {
             insertar_item_caja_cierre(caja_detalle_CIERRE);
-//            int idcaja_cierre = (eveconn.getInt_ultimoID_max(connLocal, cjcie.getTb_caja_cierre(), cjcie.getId_idcaja_cierre()));
-//            poscc.boton_imprimir_pos_caja_cierre(connLocal, idcaja_cierre);
+//            int idcaja_cierre = (eveconn.getInt_ultimoID_max(connLocal, ENTcc.getTb_caja_cierre(), ENTcc.getId_idcaja_cierre()));
+            JOptionPane.showMessageDialog(null, "idcaja_cierre:"+idcaja_cierre);
+            poscc.boton_imprimir_pos_caja_cierre(connLocal, idcaja_cierre);
             JOptionPane.showMessageDialog(null, "EL SISTEMA SE VA CERRAR","CERRAR",JOptionPane.WARNING_MESSAGE);
             System.exit(0);
 //            this.dispose();
@@ -158,7 +146,8 @@ public class FrmCaja_Cierre extends javax.swing.JInternalFrame {
         String sql = "select count(*) as cantidad,sum(" + campo_total + ") as total\n"
                 + " from caja_detalle c \n"
                 + "where c.cierre='"+gda.getCaja_abierto()+"' \n"
-                + "and c.tabla_origen='" + origen_tabla + "'";
+                + "and c.estado='"+gda.getEstado_emitido()+"' \n"
+                + "and c.tabla_origen='" + origen_tabla + "';";
         try {
             ResultSet rs = eveconn.getResulsetSQL(connLocal, sql, titulo);
             if (rs.next()) {
@@ -220,9 +209,6 @@ public class FrmCaja_Cierre extends javax.swing.JInternalFrame {
         } catch (SQLException e) {
             evemen.mensaje_error(e, sql, titulo);
         }
-//        for(int fila=0;fila<array_caja_detalle_abierto.size();fila++){
-//            System.out.println("id="+array_caja_detalle_abierto.get(fila));
-//        }
         System.out.println("total array=" + array_caja_detalle_abierto.size());
 
     }
@@ -233,7 +219,7 @@ public class FrmCaja_Cierre extends javax.swing.JInternalFrame {
             if (connLocal.getAutoCommit()) {
                 connLocal.setAutoCommit(false);
             }
-            int idcaja_cierre = (eveconn.getInt_ultimoID_max(connLocal, ENTcc.getTb_caja_cierre(), ENTcc.getId_idcaja_cierre()));
+//            int idcaja_cierre = (eveconn.getInt_ultimoID_max(connLocal, ENTcc.getTb_caja_cierre(), ENTcc.getId_idcaja_cierre()));
             cargar_datos_caja_detalle(saldo_cierre);
             cargar_arrayList_caja_abierto();
 //            ENTcci.setC1idcaja_cierre_item(idcaja_cierre);

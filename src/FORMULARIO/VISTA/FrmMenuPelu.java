@@ -127,6 +127,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         btnfuncionario = new javax.swing.JButton();
         btncliente = new javax.swing.JButton();
         btnventa = new javax.swing.JButton();
+        btncaja_cierre = new javax.swing.JButton();
         lblversion = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu_venta = new javax.swing.JMenu();
@@ -205,6 +206,13 @@ public class FrmMenuPelu extends javax.swing.JFrame {
             }
         });
 
+        btncaja_cierre.setText("CAJA CIERRE");
+        btncaja_cierre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncaja_cierreActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -220,6 +228,8 @@ public class FrmMenuPelu extends javax.swing.JFrame {
                 .addComponent(btnfuncionario)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btncliente)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btncaja_cierre)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -229,7 +239,8 @@ public class FrmMenuPelu extends javax.swing.JFrame {
                     .addComponent(btnproducto)
                     .addComponent(btnservicio)
                     .addComponent(btnfuncionario)
-                    .addComponent(btncliente))
+                    .addComponent(btncliente)
+                    .addComponent(btncaja_cierre))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnventa)
                 .addContainerGap(39, Short.MAX_VALUE))
@@ -579,6 +590,11 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         evetbl.abrir_TablaJinternal(new FrmCaja_abrir_cerrar());
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void btncaja_cierreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncaja_cierreActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmCaja_abrir_cerrar());
+    }//GEN-LAST:event_btncaja_cierreActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -622,6 +638,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btncaja_cierre;
     private javax.swing.JButton btncliente;
     private javax.swing.JButton btnfuncionario;
     private javax.swing.JButton btnproducto;

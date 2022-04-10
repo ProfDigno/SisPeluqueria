@@ -58,7 +58,7 @@ public class DAO_funcionario_grupo_comision {
             pst.execute();
             pst.close();
             evemen.Imprimir_serial_sql(sql_insert + "\n" + fungc.toString(), titulo);
-            evemen.guardado_correcto(mensaje_insert, true);
+            evemen.guardado_correcto(mensaje_insert, false);
         } catch (Exception e) {
             evemen.mensaje_error(e, sql_insert + "\n" + fungc.toString(), titulo);
         }
@@ -176,5 +176,22 @@ public class DAO_funcionario_grupo_comision {
         }
         return idfuncionario_grupo_comision;
     }
-
+    public void update_funcionario_grupo_comision_CERRAR(Connection conn, funcionario_grupo_comision fungc) {
+        String titulo = "update_funcionario_grupo_comision_CERRAR";
+        String sql_update_cerrar = "UPDATE funcionario_grupo_comision SET fecha_fin=?,estado=?,es_abierto=? "
+                + "WHERE idfuncionario_grupo_comision=?;";
+        PreparedStatement pst = null;
+        try {
+            pst = conn.prepareStatement(sql_update_cerrar);
+            pst.setTimestamp(1, evefec.getTimestamp_sistema());
+            pst.setString(2, fungc.getC6estado());
+            pst.setBoolean(3, fungc.getC7es_abierto());
+            pst.setInt(4, fungc.getC1idfuncionario_grupo_comision());
+            pst.execute();
+            pst.close();
+            evemen.Imprimir_serial_sql(sql_update_cerrar + "\n" + fungc.toString(), titulo);
+        } catch (Exception e) {
+            evemen.mensaje_error(e, sql_update_cerrar + "\n" + fungc.toString(), titulo);
+        }
+    }
 }

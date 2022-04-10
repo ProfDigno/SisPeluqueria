@@ -8,11 +8,14 @@ package FORMULARIO.VISTA;
 import BASEDATO.EvenConexion;
 import BASEDATO.LOCAL.ConnPostgres;
 import BUSCAR.ClaVarBuscar;
+import CONFIGURACION.Global_datos;
 import Evento.JTextField.EvenJTextField;
 import Evento.Jframe.EvenJFRAME;
 import Evento.Jtable.EvenJtable;
 import FORMULARIO.DAO.DAO_caja_cierre;
 import FORMULARIO.ENTIDAD.caja_cierre;
+import IMPRESORA_POS.PosImprimir_Funcio_Recibo;
+import IMPRESORA_POS.PosImprimir_Venta;
 import IMPRESORA_POS.PosImprimir_caja_cierre;
 import java.sql.Connection;
 import javax.swing.JTable;
@@ -33,6 +36,9 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
     private caja_cierre ENTcc = new caja_cierre();
     private DAO_caja_cierre DAOcc = new DAO_caja_cierre();
     private PosImprimir_caja_cierre poscc = new PosImprimir_caja_cierre();
+    private PosImprimir_Venta posven = new PosImprimir_Venta();
+    private PosImprimir_Funcio_Recibo posfr=new PosImprimir_Funcio_Recibo();
+    private Global_datos gda = new Global_datos();
     private void abrir_formulario() {
         this.setTitle(nombre_formulario);
         evetbl.centrar_formulario_internalframa(this);
@@ -41,29 +47,41 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
     void seleccionar_caja_detalle() {
         if (!eveJtab.getBoolean_validar_select(tblcaja_cierre)) {
             int fk_idcaja_cierre=eveJtab.getInt_select_id(tblcaja_cierre);
-            actualizar_tabla_otros(tblventa, fk_idcaja_cierre);
-            anchotabla_caja_detalle_otros(tblventa);
+            actualizar_tabla_otros(tblventa, fk_idcaja_cierre,"fk_idventa","in_monto_venta",gda.getTbl_venta());
+            actualizar_tabla_otros(tblfuncionario_recibo, fk_idcaja_cierre,"fk_idfuncionario_recibo","eg_monto_recibo_funcionario",gda.getTbl_funcionario());
         }
     }
     void anchotabla_caja_detalle_otros(JTable tabla) {
         int Ancho[] = {5, 15, 60,10, 10};
         eveJtab.setAnchoColumnaJtable(tabla, Ancho);
     }
-    private void actualizar_tabla_otros(JTable tabla,int fk_idcaja_cierre) {
-        String sql = "select cd.fk_idventa as idv,to_char(cd.fecha_creado,'yyyy-MM-dd HH24:MI') as fecha,\n"
-                + "cd.descripcion ,cd.estado,TRIM(to_char(cd.in_monto_venta,'999G999G999')) as venta \n"
+    private void actualizar_tabla_otros(JTable tabla,int fk_idcaja_cierre,String idtabla,String campomonto,String tabla_origen) {
+        String sql = "select cd."+idtabla+" as id,to_char(cd.fecha_creado,'yyyy-MM-dd HH24:MI') as fecha,\n"
+                + "cd.descripcion ,cd.estado,TRIM(to_char(cd."+campomonto+",'999G999G999')) as monto \n"
                 + "from caja_cierre_item cci,caja_detalle cd  \n"
                 + "where cci.fk_idcaja_cierre="+fk_idcaja_cierre
                 + " and cci.fk_idcaja_detalle=cd.idcaja_detalle \n"
-                + "and cd.fk_idventa>0\n"
-                + "order by cd.fk_idventa  desc;";
+                + "and cd.tabla_origen='"+tabla_origen+"' \n"
+                + " order by 1 desc;";
         eveconn.Select_cargar_jtable(conn, sql, tabla);
-
+        anchotabla_caja_detalle_otros(tabla);
     }
     private void boton_imprimir_caja_cierre(){
         if (!eveJtab.getBoolean_validar_select(tblcaja_cierre)) {
             int idcaja_cierre = eveJtab.getInt_select_id(tblcaja_cierre);
             poscc.boton_imprimir_pos_caja_cierre(conn, idcaja_cierre);
+        }
+    }
+    private void boton_imprimir_venta() {
+        if (tblventa.getSelectedRow() >= 0) {
+            int idventa_select = eveJtab.getInt_select_id(tblventa);
+            posven.boton_imprimir_pos_VENTA(conn, idventa_select);
+        }
+    }
+    private void boton_imprimir_funcionario_recibo() {
+        if(tblfuncionario_recibo.getSelectedRow()>=0){
+            int idfuncionario_recibo = eveJtab.getInt_select_id(tblfuncionario_recibo);
+            posfr.boton_imprimir_pos_funcionario_recibo(conn, idfuncionario_recibo);
         }
     }
     public FrmCaja_abrir_cerrar() {
@@ -90,6 +108,12 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblventa = new javax.swing.JTable();
+        btnimprimir_venta1 = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblfuncionario_recibo = new javax.swing.JTable();
+        btnimprimir_recibo = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -154,7 +178,7 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnimprimir_caja_cierre)
-                .addGap(0, 29, Short.MAX_VALUE))
+                .addGap(0, 51, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -190,17 +214,29 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(tblventa);
 
+        btnimprimir_venta1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/venta/ven_imprimir.png"))); // NOI18N
+        btnimprimir_venta1.setText("IMPRIMIR VENTA");
+        btnimprimir_venta1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnimprimir_venta1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 909, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(btnimprimir_venta1)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 58, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnimprimir_venta1))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -215,6 +251,59 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
         );
 
         jTabbedPane1.addTab("VENTA", jPanel3);
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("FUNCIONARIO RECIBO"));
+
+        tblfuncionario_recibo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(tblfuncionario_recibo);
+
+        btnimprimir_recibo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/venta/ven_imprimir.png"))); // NOI18N
+        btnimprimir_recibo.setText("IMPRIMIR RECIBO");
+        btnimprimir_recibo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnimprimir_reciboActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 909, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(btnimprimir_recibo)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnimprimir_recibo))
+        );
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("RECIBO FUNCIONARIO", jPanel5);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -249,17 +338,33 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
         boton_imprimir_caja_cierre();
     }//GEN-LAST:event_btnimprimir_caja_cierreActionPerformed
 
+    private void btnimprimir_reciboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnimprimir_reciboActionPerformed
+        // TODO add your handling code here:
+        boton_imprimir_funcionario_recibo();
+    }//GEN-LAST:event_btnimprimir_reciboActionPerformed
+
+    private void btnimprimir_venta1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnimprimir_venta1ActionPerformed
+        // TODO add your handling code here:
+         boton_imprimir_venta();
+    }//GEN-LAST:event_btnimprimir_venta1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnimprimir_caja_cierre;
+    private javax.swing.JButton btnimprimir_recibo;
+    private javax.swing.JButton btnimprimir_venta1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable tblcaja_cierre;
+    private javax.swing.JTable tblfuncionario_recibo;
     private javax.swing.JTable tblventa;
     // End of variables declaration//GEN-END:variables
 }

@@ -35,6 +35,7 @@ public class DAO_venta {
             + "fk_idcliente,fk_idconfiguracion_puntaje,fk_idusuario "
             + "FROM venta WHERE idventa=";
     private String sql_select_orden=" order by 1 desc;";
+    private String sql_update_anular = "UPDATE venta SET estado=? WHERE idventa=?;";
     public void insertar_venta(Connection conn, venta ven) {
         ven.setC1idventa(eveconn.getInt_ultimoID_mas_uno(conn, ven.getTb_venta(), ven.getId_idventa()));
         String titulo = "insertar_venta";
@@ -129,5 +130,19 @@ public class DAO_venta {
     public void ancho_tabla_venta(JTable tbltabla) {
         int Ancho[] = {5,11,22,22,8,8,8,8,8,8};
         evejt.setAnchoColumnaJtable(tbltabla, Ancho);
+    }
+    public void estado_update_venta(Connection conn, venta ven) {
+        String titulo = "anular_update_venta";
+        PreparedStatement pst = null;
+        try {
+            pst = conn.prepareStatement(sql_update_anular);
+            pst.setString(1, ven.getC4estado());
+            pst.setInt(2, ven.getC1idventa());
+            pst.execute();
+            pst.close();
+            evemen.Imprimir_serial_sql(sql_update_anular + "\n" + ven.toString(), titulo);
+        } catch (Exception e) {
+            evemen.mensaje_error(e, sql_update_anular + "\n" + ven.toString(), titulo);
+        }
     }
 }
