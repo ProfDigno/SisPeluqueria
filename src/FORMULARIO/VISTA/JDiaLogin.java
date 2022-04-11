@@ -70,32 +70,33 @@ public class JDiaLogin extends javax.swing.JDialog {
     }
 
     void buscar_usuario() {
-//        if (dao_usu.getBoolean_buscar_usuario_existente(conn, ENTusu)) {
-//            JOptionPane.showMessageDialog(this, "BIENVENIDO\n" + ENTusu.getGlobal_nombre());
-//            habilitar_evento_menu();
-//            if(var.getPsCrea_backup().equals("SI")){
-//                evetbl.abrir_TablaJinternal(new FrmCrearBackup());
-//            }
-//            this.dispose();
-//
-//        } else {
-//            txtusuario.setText(null);
-//            jPassword.setText(null);
-//            txtusuario.grabFocus();
-//        }
+        if (dao_usu.getBoolean_buscar_usuario_existente(conn, ENTusu)) {
+            JOptionPane.showMessageDialog(this, "BIENVENIDO\n" + ENTusu.getGlobal_nombre());
+            FrmMenuPelu.lblusuario.setText(ENTusu.getGlobal_nombre()+" :"+ENTusu.getGlobal_nivel());
+            habilitar_evento_menu();
+            if(var.getPsCrea_backup().equals("SI")){
+                evetbl.abrir_TablaJinternal(new FrmCrearBackup());
+            }
+            this.dispose();
+
+        } else {
+            txtusuario.setText(null);
+            jPassword.setText(null);
+            txtusuario.grabFocus();
+        }
     }
 
     void boton_entrar() {
-//        if (validar_ingreso()) {
-//            ENTusu.setC2usuario(txtusuario.getText());
-//            String senha = String.valueOf(jPassword.getPassword());
-//            ENTusu.setC3senha(senha);
-//            buscar_usuario();
-//        }
+        if (validar_ingreso()) {
+            ENTusu.setC5usuario(txtusuario.getText());
+            String senha = String.valueOf(jPassword.getPassword());
+            ENTusu.setC6password(senha);
+            buscar_usuario();
+        }
     }
     void habilitar_evento_menu_bloquear() {
 
-        FrmMenuPelu.jMenu_gasto.setEnabled(false);
+//        FrmMenuPelu.jMenu_gasto.setEnabled(false);
 
     }
     void habilitar_evento_menu() {
@@ -137,7 +138,7 @@ public class JDiaLogin extends javax.swing.JDialog {
         panel_insert.setBorder(javax.swing.BorderFactory.createTitledBorder("INGRESO DE USUARIO"));
 
         lblimagen.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblimagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/MENU/LOGO.png"))); // NOI18N
+        lblimagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/MENU/logo_login.png"))); // NOI18N
         lblimagen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -175,33 +176,32 @@ public class JDiaLogin extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panel_insertLayout.createSequentialGroup()
-                        .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblimagen)
-                            .addGroup(panel_insertLayout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel3))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jPassword)
-                                    .addComponent(txtusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(lblimagen)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                        .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPassword)
+                            .addComponent(txtusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(btnentrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panel_insertLayout.setVerticalGroup(
             panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(panel_insertLayout.createSequentialGroup()
-                .addComponent(lblimagen, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel1)
-                    .addComponent(txtusuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
+                .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panel_insertLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel1)
+                            .addComponent(txtusuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panel_insertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)))
+                    .addComponent(lblimagen, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnentrar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -211,13 +211,11 @@ public class JDiaLogin extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel_insert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(panel_insert, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(panel_insert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(panel_insert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();

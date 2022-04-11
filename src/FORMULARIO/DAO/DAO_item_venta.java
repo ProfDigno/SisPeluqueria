@@ -150,6 +150,7 @@ public class DAO_item_venta {
         funcionario_comision ENTfc=new funcionario_comision();
         DAO_funcionario_comision DAOfc=new DAO_funcionario_comision();
         DAO_funcionario_grupo_comision DAOfgc=new DAO_funcionario_grupo_comision();
+        DAO_producto DAOpro=new DAO_producto();
         for (int row = 0; row < tblitem_producto.getRowCount(); row++) {
             String ord = ((tblitem_producto.getModel().getValueAt(row, 0).toString()));
             String tipo = ((tblitem_producto.getModel().getValueAt(row, 1).toString()));
@@ -186,6 +187,7 @@ public class DAO_item_venta {
                 iven.setC16fk_idfuncionario(idfuncionario);
                 iven.setC17monto_comision(Double.parseDouble(monto_comision));
                 insertar_item_venta(conn, iven);
+                DAOpro.update_stock_actual_producto(conn, cant, fk_idproducto);
                 //**FUNCIONARIO COMISION
                 int idfuncionario_grupo_comision=DAOfgc.getInt_id_abierto_funcionario_grupo_comision(conn,idfuncionario);
                 ENTfc.setC3creado_por(gda.getCreado_por());
@@ -200,6 +202,7 @@ public class DAO_item_venta {
                 ENTfc.setC13fk_idventa(ven.getC1idventa());
                 DAOfc.insertar_funcionario_comision(conn, ENTfc);
                 DAOfc.update_total_comision_funcionario(conn, idfuncionario);
+                
             } catch (Exception e) {
                 evemen.mensaje_error(e, "insertar_item_venta_de_tabla");
                 break;

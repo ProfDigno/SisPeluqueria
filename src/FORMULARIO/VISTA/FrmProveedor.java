@@ -7,6 +7,7 @@ package FORMULARIO.VISTA;
 
 import BASEDATO.EvenConexion;
 import BASEDATO.LOCAL.ConnPostgres;
+import CONFIGURACION.Global_datos;
 import Evento.Color.cla_color_palete;
 import Evento.JTextField.EvenJTextField;
 import Evento.Jframe.EvenJFRAME;
@@ -31,8 +32,9 @@ public class FrmProveedor extends javax.swing.JInternalFrame {
     private EvenJTextField evejtf = new EvenJTextField();
     Connection conn = ConnPostgres.getConnPosgres();
     cla_color_palete clacolor = new cla_color_palete();
+    private Global_datos gda = new Global_datos();
     private String nombre_formulario = "PROVEEDOR";
-    String creado_por = "DIGNO";
+//    String creado_por = "DIGNO";
     private double total_comision;
 
     private void abrir_formulario() {
@@ -71,7 +73,7 @@ public class FrmProveedor extends javax.swing.JInternalFrame {
     }
 
     private void cargar_dato() {
-        ENTfun.setC3creado_por(creado_por);
+        ENTfun.setC3creado_por(gda.getCreado_por());
         ENTfun.setC4orden(Integer.parseInt(txtorden.getText()));
         ENTfun.setC5activo(jCactivar.isSelected());
         ENTfun.setC7nombre(txtnombre.getText());

@@ -16,6 +16,8 @@ import Evento.Color.cla_color_palete;
 import Evento.Fecha.EvenFecha;
 import Evento.Jframe.EvenJFRAME;
 import FORMULARIO.DAO.DAO_caja_cierre;
+import FORMULARIO.DAO.DAO_empresa;
+import FORMULARIO.ENTIDAD.empresa;
 import FORMULARIO.ENTIDAD.usuario;
 //import REPORTE.PRODUCTO.cla_InvPro_compra_todos;
 import java.awt.Color;
@@ -40,6 +42,8 @@ public class FrmMenuPelu extends javax.swing.JFrame {
     cla_color_palete clacolor = new cla_color_palete();
     EvenConexion eveconn = new EvenConexion();
      private DAO_caja_cierre DAOcc=new DAO_caja_cierre();
+      private empresa ENTemp = new empresa();
+    private DAO_empresa DAOemp = new DAO_empresa();
 //    dao_usuario dao_usu=new dao_usuario();
 //    cla_InvPro_compra_todos inv_com = new cla_InvPro_compra_todos();
     json_imprimir_pos jsprint = new json_imprimir_pos();
@@ -59,6 +63,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         titulo_sistema();
         cargar_colores();
         actualizacion_version_v1();
+         DAOemp.cargar_empresa(conn, ENTemp, 1);
         lblversion.setText(version_estatica);
     }
 
@@ -128,7 +133,9 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         btncliente = new javax.swing.JButton();
         btnventa = new javax.swing.JButton();
         btncaja_cierre = new javax.swing.JButton();
+        btngasto = new javax.swing.JButton();
         lblversion = new javax.swing.JLabel();
+        lblusuario = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu_venta = new javax.swing.JMenu();
         jMenuItem_venta = new javax.swing.JMenuItem();
@@ -213,6 +220,13 @@ public class FrmMenuPelu extends javax.swing.JFrame {
             }
         });
 
+        btngasto.setText("GASTO");
+        btngasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btngastoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -223,14 +237,16 @@ public class FrmMenuPelu extends javax.swing.JFrame {
                     .addComponent(btnventa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnproducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnservicio)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnservicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btngasto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnfuncionario)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btncliente)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btncaja_cierre)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(425, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,15 +258,21 @@ public class FrmMenuPelu extends javax.swing.JFrame {
                     .addComponent(btncliente)
                     .addComponent(btncaja_cierre))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnventa)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnventa)
+                    .addComponent(btngasto))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
         lblversion.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         lblversion.setText("jLabel1");
 
+        lblusuario.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        lblusuario.setText("user");
+
         escritorio.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         escritorio.setLayer(lblversion, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        escritorio.setLayer(lblusuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout escritorioLayout = new javax.swing.GroupLayout(escritorio);
         escritorio.setLayout(escritorioLayout);
@@ -259,8 +281,10 @@ public class FrmMenuPelu extends javax.swing.JFrame {
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(escritorioLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblversion, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(762, Short.MAX_VALUE))
+                .addGroup(escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblversion, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         escritorioLayout.setVerticalGroup(
             escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -268,7 +292,9 @@ public class FrmMenuPelu extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblversion)
-                .addGap(0, 482, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 452, Short.MAX_VALUE))
         );
 
         jMenu_venta.setText("VENTA");
@@ -399,6 +425,11 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         jMenu_configuracion.setText("CONFIGURACION");
 
         jMenuItem_usuario.setText("USUARIO");
+        jMenuItem_usuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_usuarioActionPerformed(evt);
+            }
+        });
         jMenu_configuracion.add(jMenuItem_usuario);
 
         jMenuItem_config_puntaje.setText("CONFIGURACION PUNTAJE");
@@ -410,6 +441,11 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         jMenu_configuracion.add(jMenuItem_config_puntaje);
 
         jMenuItem_empresa.setText("EMPRESA");
+        jMenuItem_empresa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_empresaActionPerformed(evt);
+            }
+        });
         jMenu_configuracion.add(jMenuItem_empresa);
 
         jMenuItem1.setText("CONFIGURAR JSON FORMULARIO");
@@ -471,8 +507,8 @@ public class FrmMenuPelu extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
-//        JDiaLogin log = new JDiaLogin(this, true);
-//        log.setVisible(true);
+        JDiaLogin log = new JDiaLogin(this, true);
+        log.setVisible(true);
     }//GEN-LAST:event_formWindowOpened
 
     private void jMenuItem_gasto_tipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_gasto_tipoActionPerformed
@@ -595,6 +631,21 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         evetbl.abrir_TablaJinternal(new FrmCaja_abrir_cerrar());
     }//GEN-LAST:event_btncaja_cierreActionPerformed
 
+    private void jMenuItem_empresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_empresaActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmEmpresa());
+    }//GEN-LAST:event_jMenuItem_empresaActionPerformed
+
+    private void jMenuItem_usuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_usuarioActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmUsuario());
+    }//GEN-LAST:event_jMenuItem_usuarioActionPerformed
+
+    private void btngastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btngastoActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmGasto());
+    }//GEN-LAST:event_btngastoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -641,6 +692,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
     private javax.swing.JButton btncaja_cierre;
     private javax.swing.JButton btncliente;
     private javax.swing.JButton btnfuncionario;
+    private javax.swing.JButton btngasto;
     private javax.swing.JButton btnproducto;
     private javax.swing.JButton btnservicio;
     private javax.swing.JButton btnventa;
@@ -678,6 +730,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
     public static javax.swing.JMenu jMenu_servicio;
     public static javax.swing.JMenu jMenu_venta;
     private javax.swing.JPanel jPanel1;
+    public static javax.swing.JLabel lblusuario;
     private javax.swing.JLabel lblversion;
     // End of variables declaration//GEN-END:variables
 }

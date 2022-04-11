@@ -1,22 +1,22 @@
                                                 
- =========PELUQUERIA=========                   
- VENTA:35      FEC:2022-04-09 14:36             
+ =========PELUQUERIA ROSI=========              
+ AVDA CAMPO VIA                                 
+ 0986799285                                     
+ #=============================#                
+ VENTA:76      FEC:2022-04-10 23:10             
+                                                
  CLI: 2-Digno Alfredo                           
  TEL: 0986799285                                
  DIR: Area 5 M43, L18 Pdte Franco               
  #=============================#                
- MANICURA-dibujo                                
-    1 X     100,000 =    100,000                
- MANICURA-siliconado                            
-    1 X     80,000 =     80,000                 
+ PINTA UNA-color rojo                           
+    2 X     15,000 =     30,000                 
+ PINCEL-UNAS                                    
+    2 X     21,000 =     42,000                 
                                                 
  #=============================#                
-                                                
-                                                
- TOTAL :                 180,000                
-                                                
-                                                
-                                                
+ TOTAL :                                        
+                         72,000                 
                                                 
                                                 
                                                 

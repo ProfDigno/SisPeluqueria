@@ -76,6 +76,14 @@ public class JDiaBuscarDosColumnas extends javax.swing.JDialog {
                     + "and nombre ilike'%" + buscar + "%' "
                     + "order by 2 desc;";
         }
+         if (vbus.getTipo_tabla() == 5) {
+            cant_columna=2;
+            sql = "select idgasto_tipo as idt,nombre  \n"
+                    + "from gasto_tipo "
+                    + "where activo=true\n"
+                    + "and nombre ilike'%" + buscar + "%' "
+                    + "order by 2 desc;";
+        }
         if (cant_columna == 2) {
             eveconn.Select_cargar_jtable(conn, sql, tblbuscar);
             eveJtab.setAnchoColumnaJtable(tblbuscar, Ancho);
@@ -102,6 +110,10 @@ public class JDiaBuscarDosColumnas extends javax.swing.JDialog {
                 FrmServicio.txtbuscar_funcionario.setText(nombre);
                 FrmServicio.setFk_idfuncionario(id);
             }
+            if (vbus.getTipo_tabla() == 5) {
+                FrmGasto.txtbuscar_gasto_tipo.setText(nombre);
+                FrmGasto.setFk_idgasto_tipo(id);
+            }
         }
     }
 
@@ -117,6 +129,9 @@ public class JDiaBuscarDosColumnas extends javax.swing.JDialog {
         }
        if (vbus.getTipo_tabla() == 4) {
             FrmServicio.txtprecio_venta.grabFocus();
+        }
+       if (vbus.getTipo_tabla() == 5) {
+            FrmGasto.txtmonto_gasto.grabFocus();
         }
     }
 

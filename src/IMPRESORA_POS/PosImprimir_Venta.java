@@ -6,9 +6,11 @@
 package IMPRESORA_POS;
 
 import BASEDATO.EvenConexion;
+import CONFIGURACION.Global_datos;
 //import Config_JSON.json_config;
 import Config_JSON.json_imprimir_pos;
 import Evento.Mensaje.EvenMensajeJoptionpane;
+import FORMULARIO.ENTIDAD.empresa;
 import br.com.adilson.util.Extenso;
 import br.com.adilson.util.PrinterMatrix;
 import java.io.FileInputStream;
@@ -29,8 +31,10 @@ public class PosImprimir_Venta {
 
     EvenConexion eveconn = new EvenConexion();
     EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
+    private static empresa ENTemp = new empresa();
 //    private static json_config config = new json_config();
     ClaImpresoraPos pos = new ClaImpresoraPos();
+    private Global_datos gda = new Global_datos();
     private static json_imprimir_pos jsprint = new json_imprimir_pos();
     private static String v1_idventa = "0";
     private static String v2_fecha = "0";
@@ -39,7 +43,7 @@ public class PosImprimir_Venta {
     private static String v5_direccion = "0";
     private static String v6_monto = "0";
 //    private static String v7_observacion = "0";
-    private static String tk_nombre_empresa = "PELUQUERIA";
+//    private static String tk_nombre_empresa =ENTemp.getC4nombre();
     private static String tk_ruta_archivo = "ticket_venta.txt";
     private static String[] iv1_cantidad = new String[200];
     private static String[] iv2_precio = new String[200];
@@ -97,7 +101,10 @@ public class PosImprimir_Venta {
         String mensaje_impresora = "";
         String saltolinea = "\n";
         String tabular = "\t";
-        mensaje_impresora = mensaje_impresora + "===============" + tk_nombre_empresa + "================" + saltolinea;
+        mensaje_impresora = mensaje_impresora + "===============" + ENTemp.getC4nombre() + "================" + saltolinea;
+        mensaje_impresora = mensaje_impresora + "DIREC:" + ENTemp.getC5direccion() + saltolinea;
+        mensaje_impresora = mensaje_impresora + "TEL.:" + ENTemp.getC6telefono() + saltolinea;
+        mensaje_impresora = mensaje_impresora + "------------------------------------------" + saltolinea;
         mensaje_impresora = mensaje_impresora + "VENTA:" + v1_idventa + saltolinea;
         mensaje_impresora = mensaje_impresora + "FECHA: " + v2_fecha + saltolinea;
         mensaje_impresora = mensaje_impresora + "CLIENTE: " + v3_cliente + saltolinea;
@@ -126,28 +133,30 @@ public class PosImprimir_Venta {
         int tempfila = 0;
         int totalfila = jsprint.getTt_fila_ven() + (tk_iv_fila + tk_iv_sum_fila);
         printer.setOutSize(totalfila, totalColumna);
-        printer.printTextWrap(1 + tempfila, 1, jsprint.getSep_inicio(), totalColumna, jsprint.getLinea_cabezera() + tk_nombre_empresa + jsprint.getLinea_cabezera());
-        printer.printTextWrap(2 + tempfila, 2, jsprint.getSep_inicio(), totalColumna, "VENTA:" + v1_idventa);
-        printer.printTextWrap(2 + tempfila, 2, jsprint.getSep_fecha(), totalColumna, "FEC:" + v2_fecha);
-        printer.printTextWrap(3 + tempfila, 3, jsprint.getSep_inicio(), totalColumna, "CLI: " + v3_cliente);
-        printer.printTextWrap(4 + tempfila, 4, jsprint.getSep_inicio(), totalColumna, "TEL: " + v4_telefono);
-        printer.printTextWrap(5 + tempfila, 5, jsprint.getSep_inicio(), totalColumna, "DIR: " + v5_direccion);
-        printer.printTextWrap(6 + tempfila, 6, jsprint.getSep_inicio(), totalColumna, jsprint.getLinea_separador());
+        printer.printTextWrap(1 + tempfila, 1, jsprint.getSep_inicio(), totalColumna, jsprint.getLinea_cabezera() + ENTemp.getC4nombre() + jsprint.getLinea_cabezera());
+        printer.printTextWrap(2 + tempfila, 2, jsprint.getSep_inicio(), totalColumna, ENTemp.getC5direccion());
+        printer.printTextWrap(3 + tempfila, 3, jsprint.getSep_inicio(), totalColumna, ENTemp.getC6telefono());
+        printer.printTextWrap(4 + tempfila, 4, jsprint.getSep_inicio(), totalColumna,jsprint.getLinea_separador());
+        printer.printTextWrap(5 + tempfila, 5, jsprint.getSep_inicio(), totalColumna, "VENTA:" + v1_idventa);
+        printer.printTextWrap(5 + tempfila, 5, jsprint.getSep_fecha(), totalColumna, "FEC:" + v2_fecha);
+        printer.printTextWrap(7 + tempfila, 7, jsprint.getSep_inicio(), totalColumna, "CLI: " + v3_cliente);
+        printer.printTextWrap(8 + tempfila, 8, jsprint.getSep_inicio(), totalColumna, "TEL: " + v4_telefono);
+        printer.printTextWrap(9 + tempfila, 9, jsprint.getSep_inicio(), totalColumna, "DIR: " + v5_direccion);
+        printer.printTextWrap(10 + tempfila, 10, jsprint.getSep_inicio(), totalColumna, jsprint.getLinea_separador());
         for (int i = 0; i < tk_iv_fila; i++) {
-            printer.printTextWrap(7 + tempfila, 7, jsprint.getSep_inicio(), jsprint.getTt_text_descrip(), iv4_descripcion[i]);
+            printer.printTextWrap(11 + tempfila, 11, jsprint.getSep_inicio(), jsprint.getTt_text_descrip(), iv4_descripcion[i]);
             if (iv2_precio_int[i] > 0) {
-                printer.printTextWrap(8 + tempfila, 8, jsprint.getSep_item_cant(), totalColumna, iv1_cantidad[i] + " X");
-                printer.printTextWrap(8 + tempfila, 8, jsprint.getSep_item_precio(), totalColumna, iv2_precio[i] + " =");
-                printer.printTextWrap(8 + tempfila, 8, jsprint.getSep_item_subtotal(), totalColumna, iv3_total[i]);
+                printer.printTextWrap(12 + tempfila, 12, jsprint.getSep_item_cant(), totalColumna, iv1_cantidad[i] + " X");
+                printer.printTextWrap(12 + tempfila, 12, jsprint.getSep_item_precio(), totalColumna, iv2_precio[i] + " =");
+                printer.printTextWrap(12 + tempfila, 12, jsprint.getSep_item_subtotal(), totalColumna, iv3_total[i]);
                 tempfila = tempfila + 2;
             } else {
                 tempfila = tempfila + 1;
             }
         }
-        printer.printTextWrap(8 + tempfila, 8, jsprint.getSep_inicio(), totalColumna, jsprint.getLinea_separador());
-//        printer.printTextWrap(10 + tempfila, 10, jsprint.getSep_inicio(), totalColumna, "OBSERVACION: " + v7_observacion);
-        printer.printTextWrap(11 + tempfila, 11, jsprint.getSep_inicio(), totalColumna, "TOTAL :");
-        printer.printTextWrap(11 + tempfila, 11, jsprint.getSep_total_gral(), totalColumna, v6_monto);
+        printer.printTextWrap(12 + tempfila, 12, jsprint.getSep_inicio(), totalColumna, jsprint.getLinea_separador());
+        printer.printTextWrap(13 + tempfila, 13, jsprint.getSep_inicio(), totalColumna, "TOTAL :");
+        printer.printTextWrap(14 + tempfila, 14, jsprint.getSep_total_gral(), totalColumna, v6_monto);
         printer.toFile(tk_ruta_archivo);
         try {
             inputStream = new FileInputStream(tk_ruta_archivo);

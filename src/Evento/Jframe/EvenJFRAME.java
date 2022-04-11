@@ -7,6 +7,7 @@ package Evento.Jframe;
 
 import Config_JSON.json_array;
 import Evento.Mensaje.EvenMensajeJoptionpane;
+import FORMULARIO.ENTIDAD.usuario;
 import FORMULARIO.VISTA.FrmMenuPelu;
 //import FORMULARIO.VISTA.FrmMenuProba;
 import java.awt.Dimension;
@@ -21,9 +22,11 @@ import javax.swing.JOptionPane;
  */
 public class EvenJFRAME {
     EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
+    private usuario ENTusu = new usuario();
     private json_array jsarr=new json_array();
     public void abrir_TablaJinternal(JInternalFrame formu) {
-        String nivel_acceso="FRM_ADMIN";
+        System.out.println("ENTusu.getGlobal_nivel:"+ENTusu.getGlobal_nivel());
+        String nivel_acceso=ENTusu.getGlobal_nivel(); //ENTusu.getC7nivel();
         String nombre=formu.getClass().getSimpleName();
         System.out.println("MI FORMULARIO:"+nombre);
         if(jsarr.getBoo_cargar_jsom_array(nombre,nivel_acceso)){

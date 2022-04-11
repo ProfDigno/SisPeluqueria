@@ -9,6 +9,7 @@ import BASEDATO.EvenConexion;
 //import Config_JSON.json_config;
 import Config_JSON.json_imprimir_pos;
 import Evento.Mensaje.EvenMensajeJoptionpane;
+import FORMULARIO.ENTIDAD.empresa;
 import br.com.adilson.util.Extenso;
 import br.com.adilson.util.PrinterMatrix;
 import java.io.FileInputStream;
@@ -29,6 +30,7 @@ public class PosImprimir_caja_cierre {
 
     EvenConexion eveconn = new EvenConexion();
     EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
+    private static empresa ENTemp = new empresa();
 //    private static json_config config = new json_config();
     private static json_imprimir_pos jsprint = new json_imprimir_pos();
     ClaImpresoraPos pos = new ClaImpresoraPos();
@@ -38,7 +40,7 @@ public class PosImprimir_caja_cierre {
 //    private static String tk_cliente = "el tipo de vale";
 //    private static String tk_monto = "15.000";
     private static String tk_usuario = "digno";
-    private static String tk_nombre_empresa = "";
+//    private static String tk_nombre_empresa = "";
     private static String tk_ruta_archivo = "ticket_caja_cierre.txt";
     private static FileInputStream inputStream = null;
     private static String nombre_ticket = "CIERRE-CAJA";

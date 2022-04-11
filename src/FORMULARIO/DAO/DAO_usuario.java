@@ -23,7 +23,7 @@ public class DAO_usuario {
     private String mensaje_update = "USUARIO MODIFICADO CORECTAMENTE";
     private String sql_insert = "INSERT INTO usuario(idusuario,fecha_creado,creado_por,nombre,usuario,password,nivel) VALUES (?,?,?,?,?,?,?);";
     private String sql_update = "UPDATE usuario SET fecha_creado=?,creado_por=?,nombre=?,usuario=?,password=?,nivel=? WHERE idusuario=?;";
-    private String sql_select = "SELECT idusuario,fecha_creado,creado_por,nombre,usuario,password,nivel FROM usuario order by 1 desc;";
+    private String sql_select = "SELECT idusuario as id,nombre,usuario,nivel FROM usuario order by 1 desc;";
     private String sql_cargar = "SELECT idusuario,fecha_creado,creado_por,nombre,usuario,password,nivel FROM usuario WHERE idusuario=";
 
     public void insertar_usuario(Connection conn, usuario usu) {
@@ -94,7 +94,7 @@ public class DAO_usuario {
     }
 
     public void ancho_tabla_usuario(JTable tbltabla) {
-        int Ancho[] = {14, 14, 14, 14, 14, 14, 14};
+        int Ancho[] = {10, 50, 20,20};
         evejt.setAnchoColumnaJtable(tbltabla, Ancho);
     }
     public boolean getBoolean_buscar_usuario_existente(Connection conn, usuario usu) {
@@ -105,6 +105,10 @@ public class DAO_usuario {
             if (rs.next()) {
                 usu.setGlobal_idusuario(rs.getInt("idusuario"));
                 usu.setGlobal_nombre(rs.getString("nombre"));
+                usu.setGlobal_nivel(rs.getString("nivel"));
+                System.out.println("getGlobal_idusuario:"+usu.getGlobal_idusuario());
+                System.out.println("getGlobal_nombre:"+usu.getGlobal_nombre());
+                System.out.println("getGlobal_nivel:"+usu.getGlobal_nivel());
                 return true;
             } else {
                 JOptionPane.showMessageDialog(null, "USUARIO O PASSWORD INCORRECTA", "ERROR", JOptionPane.ERROR_MESSAGE);

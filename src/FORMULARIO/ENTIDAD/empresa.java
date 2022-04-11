@@ -2,12 +2,12 @@
 public class empresa {
 
 //---------------DECLARAR VARIABLES---------------
-private int C1idempresa;
-private String C2fecha_creado;
-private String C3creado_por;
-private String C4nombre;
-private String C5direccion;
-private String C6telefono;
+public static int C1idempresa;
+public static String C2fecha_creado;
+public static String C3creado_por;
+public static String C4nombre;
+public static String C5direccion;
+public static String C6telefono;
 private static String nom_tabla;
 private static String nom_idtabla;
 //---------------TABLA-ID---------------

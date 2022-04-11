@@ -44,20 +44,12 @@ public class DAO_producto {
             + "fk_idproducto_categoria,fk_idproducto_unidad "
             + "FROM producto WHERE idproducto=";
 private String sql_select_venta = "select s.idproducto as idp,(sc.nombre||'-'||s.nombre) as producto,"
+            + "TRIM(to_char(s.stock_actual,'999999')) as sto,"
             + "TRIM(to_char(s.precio_venta,'999G999G999')) as precio,s.precio_compra \n"
             + "from producto s,producto_categoria sc  \n"
             + "where s.fk_idproducto_categoria=sc.idproducto_categoria \n"
             + "and s.activo=true\n";
-/*
- private String sql_select_venta = "select s.idservicio as ids,(sc.nombre||'-'||s.nombre) as servicio,"
-            + "TRIM(to_char(s.porcentaje_comision,'99')) as \"%\","
-            + "f.nombre as funcionario,"
-            + "TRIM(to_char(s.precio_venta,'999G999G999')) as precio,f.idfuncionario,s.precio_compra \n"
-            + "from servicio s,servicio_categoria sc,funcionario f  \n"
-            + "where s.fk_idservicio_categoria=sc.idservicio_categoria \n"
-            + "and s.fk_idfuncionario=f.idfuncionario \n"
-            + "and s.activo=true \n";
-*/
+
     private String sql_select_ord = " order by s.orden desc;";
     public void insertar_producto(Connection conn, producto prod) {
         prod.setC1idproducto(eveconn.getInt_ultimoID_mas_uno(conn, prod.getTb_producto(), prod.getId_idproducto()));
@@ -192,8 +184,12 @@ private String sql_select_venta = "select s.idproducto as idp,(sc.nombre||'-'||s
     }
 
     public void ancho_tabla_producto_venta(JTable tbltabla) {
-        int Ancho[] = {5, 80, 15,1};
+        int Ancho[] = {5, 65,15, 15,1};
         evejt.setAnchoColumnaJtable(tbltabla, Ancho);
-        evejt.ocultar_columna(tbltabla, 3);
+        evejt.ocultar_columna(tbltabla, 4);
+    }
+    public void update_stock_actual_producto(Connection conn,String cantidad,String idproducto){
+        String sql="update producto set stock_actual=(stock_actual-"+cantidad+") where idproducto="+idproducto+";";
+        eveconn.SQL_execute_libre(conn, sql);
     }
 }

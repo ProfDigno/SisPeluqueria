@@ -1,5 +1,5 @@
 {
-	"FRM_ADMIN":[
+	"ADMIN":[
 	"FrmCrearBackup#si",
 	"FrmFuncionario#si",
 	"FrmGasto#si",
@@ -15,24 +15,28 @@
 	"FrmConfiguracion_puntaje#si",
 	"FrmVenta#si",
 	"FrmCaja_Cierre#si",
-	"FrmCaja_abrir_cerrar#si"
+	"FrmCaja_abrir_cerrar#si",
+	"FrmEmpresa#si",
+	"FrmUsuario#si"
 	],
-	"FRM_VENTA":[
+	"VENTA":[
 	"FrmCrearBackup#no",
 	"FrmFuncionario#no",
-	"FrmGasto#no",
-	"FrmGasto_tipo#no",
+	"FrmGasto#si",
+	"FrmGasto_tipo#si",
 	"FrmMenuPelu#no",
-	"FrmProducto#no",
-	"FrmProducto_categoria#no",
-	"FrmProducto_unidad#no",
-	"FrmServicio#no",
+	"FrmProducto#si",
+	"FrmProducto_categoria#si",
+	"FrmProducto_unidad#si",
+	"FrmServicio#si",
 	"FrmServicio_categoria#no",
-	"FrmCliente#no",
+	"FrmCliente#si",
 	"FrmProveedor#no",
 	"FrmConfiguracion_puntaje#no",
-	"FrmVenta#no",
+	"FrmVenta#si",
 	"FrmCaja_Cierre#no",
-	"FrmCaja_abrir_cerrar#no"
+	"FrmCaja_abrir_cerrar#no",
+	"FrmEmpresa#no",
+	"FrmUsuario#no"
 	]
 }

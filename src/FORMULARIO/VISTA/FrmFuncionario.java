@@ -232,7 +232,7 @@ public class FrmFuncionario extends javax.swing.JInternalFrame {
 
     private void cargar_dato_caja_detalle() {
         DAOcd.vaciar_caja_detalle(ENTcd);
-        ENTcd.setC4descripcion(gda.getTbl_funcionario() + "=>" + txtnombre.getText());
+        ENTcd.setC4descripcion(gda.getTbl_funcionario() + "=>" + txtnombre.getText()+" "+txtapellido.getText());
         ENTcd.setC5tabla_origen(gda.getTbl_funcionario());
         ENTcd.setC8cierre(gda.getCaja_abierto());
         ENTcd.setC6estado(gda.getEstado_emitido());

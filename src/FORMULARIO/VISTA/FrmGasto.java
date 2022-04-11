@@ -9,6 +9,7 @@ import BASEDATO.EvenConexion;
 import BASEDATO.LOCAL.ConnPostgres;
 import BUSCAR.ClaVarBuscar;
 import BUSCAR.JDiaBuscarDosColumnas;
+import CONFIGURACION.Global_datos;
 import Evento.Color.cla_color_palete;
 import Evento.Fecha.EvenFecha;
 import Evento.JLabel.EvenJLabel;
@@ -37,8 +38,8 @@ public class FrmGasto extends javax.swing.JInternalFrame {
     private DAO_gasto DAOg = new DAO_gasto();
     private gasto_tipo ENTgt = new gasto_tipo();
     private DAO_gasto_tipo DAOgt = new DAO_gasto_tipo();
-    private caja_detalle ENTcaja = new caja_detalle();
-    private DAO_caja_detalle DAOcaja = new DAO_caja_detalle();
+    private caja_detalle ENTcd = new caja_detalle();
+    private DAO_caja_detalle DAOcd = new DAO_caja_detalle();
     private EvenJTextField evejtf = new EvenJTextField();
     Connection conn = ConnPostgres.getConnPosgres();
     cla_color_palete clacolor = new cla_color_palete();
@@ -47,7 +48,9 @@ public class FrmGasto extends javax.swing.JInternalFrame {
     private DAO_usuario dao_usu = new DAO_usuario();
     private usuario ENTusu = new usuario();
     private EvenConexion eveconn = new EvenConexion();
-    private String creado_por ="";// ENTusu.getGlobal_idusuario() + "-" + ENTusu.getGlobal_nombre();
+//    private String creado_por ="";// ENTusu.getGlobal_idusuario() + "-" + ENTusu.getGlobal_nombre();
+    private String nombre_formulario = "GASTO";
+    private Global_datos gda = new Global_datos();
     private static int fk_idgasto_tipo;
 
     public static int getFk_idgasto_tipo() {
@@ -57,14 +60,14 @@ public class FrmGasto extends javax.swing.JInternalFrame {
     public static void setFk_idgasto_tipo(int fk_idgasto_tipo) {
         FrmGasto.fk_idgasto_tipo = fk_idgasto_tipo;
     }
-    private String estado_EMITIDO = "EMITIDO";
-    private String estado_ANULADO = "ANULADO";
+//    private String estado_EMITIDO = "EMITIDO";
+//    private String estado_ANULADO = "ANULADO";
     private double monto_gasto;
     private int idgasto;
     private int idgasto_select;
 
     private void abrir_formulario() {
-        this.setTitle("GASTO");
+        this.setTitle(nombre_formulario);
         evetbl.centrar_formulario_internalframa(this);
         reestableser();
         color_formulario();
@@ -96,22 +99,23 @@ public class FrmGasto extends javax.swing.JInternalFrame {
     }
 
     private void cargar_dato_caja_detalle() {
-        DAOcaja.vaciar_caja_detalle(ENTcaja);
-        ENTcaja.setC3creado_por(creado_por);
-        ENTcaja.setC4descripcion("GASTO: " + txtadescripcion.getText());
-        ENTcaja.setC6estado(estado_EMITIDO);
-        ENTcaja.setC12eg_monto_gasto(monto_gasto);
-        ENTcaja.setC16fk_idgasto(idgasto);
-        ENTcaja.setC18fk_idusuario(ENTusu.getGlobal_idusuario());
+        DAOcd.vaciar_caja_detalle(ENTcd);
+        ENTcd.setC3creado_por(gda.getCreado_por());
+        ENTcd.setC4descripcion(gda.getTbl_gasto()+"=>" +txtbuscar_gasto_tipo.getText()+", "+ txtadescripcion.getText());
+        ENTcd.setC5tabla_origen(gda.getTbl_gasto());
+        ENTcd.setC8cierre(gda.getCaja_abierto());
+        ENTcd.setC6estado(gda.getEstado_emitido());
+        ENTcd.setC12eg_monto_gasto(monto_gasto);
+        ENTcd.setC16fk_idgasto(idgasto);
     }
 
     private void cargar_dato() {
-        ENTg.setC3creado_por(creado_por);
+        ENTg.setC3creado_por(gda.getCreado_por());
         ENTg.setC2fecha_creado(txtfecha.getText());
         ENTg.setC4descripcion(txtadescripcion.getText());
         monto_gasto = Double.parseDouble(txtmonto_gasto.getText());
         ENTg.setC6monto_gasto(monto_gasto);
-        ENTg.setC5estado(estado_EMITIDO);
+        ENTg.setC5estado(gda.getEstado_emitido());
         ENTg.setC7fk_idgasto_tipo(getFk_idgasto_tipo());
         ENTg.setC8fk_idusuario(ENTusu.getGlobal_idusuario());
     }
@@ -120,16 +124,17 @@ public class FrmGasto extends javax.swing.JInternalFrame {
         if (validar_guardar()) {
             cargar_dato();
             cargar_dato_caja_detalle();
-            BOg.insertar_gasto(ENTg,tbltabla);
+            if(BOg.getBoo_insertar_gasto(ENTg, ENTcd)){
             reestableser();
+            }
         }
     }
 
     private void boton_anular() {
         if (tbltabla.getSelectedRow() >= 0) {
             ENTg.setC1idgasto(Integer.parseInt(txtid.getText()));
-            ENTg.setC5estado(estado_ANULADO);
-            ENTcaja.setC6estado(estado_ANULADO);
+            ENTg.setC5estado(gda.getEstado_anulado());
+            ENTcd.setC6estado(gda.getEstado_anulado());
 //            ENTcaja.setNom_campo_todos("fk_idgasto");
 //            ENTcaja.setFk_idtodos(idgasto_select);
 //            BOg.anular_gasto(ENTg, ENTcaja);
@@ -169,14 +174,14 @@ public class FrmGasto extends javax.swing.JInternalFrame {
         String filtro = "";
         String estado = "";
         if (jCanulado.isSelected()) {
-            estado = " and g.estado='ANULADO' ";
+            estado = " and g.estado='"+gda.getEstado_anulado()+"' ";
         } else {
-            estado = " and g.estado='EMITIDO' ";
+            estado = " and g.estado='"+gda.getEstado_emitido()+"' ";
         }
-        String fecha = evefec.getIntervalo_fecha_combobox(cmbfecha_gasto, " g.fecha ");
+        String fecha = evefec.getIntervalo_fecha_combobox(cmbfecha_gasto, " g.fecha_creado ");
         filtro = fecha + estado;
-        DAOg.actualizar_tabla_gasto(conn, tbltabla);
-        double suma_gasto = eveJtab.getDouble_sumar_tabla(tbltabla, 5);
+        DAOg.actualizar_tabla_gasto(conn, tbltabla,filtro);
+        double suma_gasto = eveJtab.getDouble_sumar_tabla(tbltabla, 4);
         jFsuma_gasto.setValue(suma_gasto);
     }
 
@@ -221,6 +226,7 @@ public class FrmGasto extends javax.swing.JInternalFrame {
         lblgasto_tipo = new javax.swing.JLabel();
         txtbuscar_gasto_tipo = new javax.swing.JTextField();
         btnbuscar_gasto_tipo = new javax.swing.JButton();
+        btnnuevo_tipogasto = new javax.swing.JButton();
         panel_tabla = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbltabla = new javax.swing.JTable();
@@ -342,6 +348,13 @@ public class FrmGasto extends javax.swing.JInternalFrame {
             }
         });
 
+        btnnuevo_tipogasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/ABM/mini_nuevo.png"))); // NOI18N
+        btnnuevo_tipogasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnnuevo_tipogastoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_insertarLayout = new javax.swing.GroupLayout(panel_insertar);
         panel_insertar.setLayout(panel_insertarLayout);
         panel_insertarLayout.setHorizontalGroup(
@@ -373,9 +386,11 @@ public class FrmGasto extends javax.swing.JInternalFrame {
                             .addComponent(txtfecha, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(panel_insertarLayout.createSequentialGroup()
-                                .addComponent(txtbuscar_gasto_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtbuscar_gasto_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnbuscar_gasto_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(btnnuevo_tipogasto, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnbuscar_gasto_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel_insertarLayout.setVerticalGroup(
@@ -393,7 +408,8 @@ public class FrmGasto extends javax.swing.JInternalFrame {
                 .addGroup(panel_insertarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lblgasto_tipo)
                     .addComponent(txtbuscar_gasto_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnbuscar_gasto_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnbuscar_gasto_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnnuevo_tipogasto))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -535,13 +551,13 @@ public class FrmGasto extends javax.swing.JInternalFrame {
 
     private void btnbuscar_gasto_tipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbuscar_gasto_tipoActionPerformed
         // TODO add your handling code here:
-        abrir_buscar(9, "GASTO", txtbuscar_gasto_tipo);
+        abrir_buscar(5, "GASTO", txtbuscar_gasto_tipo);
     }//GEN-LAST:event_btnbuscar_gasto_tipoActionPerformed
 
     private void txtbuscar_gasto_tipoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbuscar_gasto_tipoKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            abrir_buscar(9, "GASTO", txtbuscar_gasto_tipo);
+            abrir_buscar(5, "GASTO", txtbuscar_gasto_tipo);
         }
     }//GEN-LAST:event_txtbuscar_gasto_tipoKeyPressed
 
@@ -580,12 +596,18 @@ public class FrmGasto extends javax.swing.JInternalFrame {
         evetbl.abrir_TablaJinternal(new FrmGasto_tipo());
     }//GEN-LAST:event_lblgasto_tipoMouseClicked
 
+    private void btnnuevo_tipogastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnuevo_tipogastoActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmGasto_tipo());
+    }//GEN-LAST:event_btnnuevo_tipogastoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnanular;
     private javax.swing.JButton btnbuscar_gasto_tipo;
     private javax.swing.JButton btnguardar;
     private javax.swing.JButton btnnuevo;
+    private javax.swing.JButton btnnuevo_tipogasto;
     private javax.swing.JComboBox<String> cmbfecha_gasto;
     private javax.swing.JCheckBox jCanulado;
     private javax.swing.JFormattedTextField jFsuma_gasto;
@@ -604,6 +626,6 @@ public class FrmGasto extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtbuscar_gasto_tipo;
     private javax.swing.JTextField txtfecha;
     private javax.swing.JTextField txtid;
-    private javax.swing.JTextField txtmonto_gasto;
+    public static javax.swing.JTextField txtmonto_gasto;
     // End of variables declaration//GEN-END:variables
 }

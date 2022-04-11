@@ -13,6 +13,7 @@ private static String nom_tabla;
 private static String nom_idtabla;
 private static int global_idusuario;
 private static String global_nombre;
+private static String global_nivel;
 //---------------TABLA-ID---------------
 	public usuario() {
 		setTb_usuario("usuario");
@@ -88,6 +89,14 @@ private static String global_nombre;
 
     public static void setGlobal_nombre(String global_nombre) {
         usuario.global_nombre = global_nombre;
+    }
+
+    public static String getGlobal_nivel() {
+        return global_nivel;
+    }
+
+    public static void setGlobal_nivel(String global_nivel) {
+        usuario.global_nivel = global_nivel;
     }
         
 	public String toString() {

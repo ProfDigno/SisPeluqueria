@@ -148,7 +148,7 @@ public class FrmVenta extends javax.swing.JInternalFrame {
     }
 
     private void boton_anular_venta() {
-        if (tblventa.getSelectedRow() > 0) {
+        if (tblventa.getSelectedRow() >= 0) {
             int idventa_select = eveJtab.getInt_select_id(tblventa);
             ENTven.setC4estado(gda.getEstado_anulado());
             ENTven.setC1idventa(idventa_select);
@@ -164,7 +164,7 @@ public class FrmVenta extends javax.swing.JInternalFrame {
     }
 
     private void boton_imprimir_ticket() {
-        if (tblventa.getSelectedRow() > 0) {
+        if (tblventa.getSelectedRow() >= 0) {
             int idventa_select = eveJtab.getInt_select_id(tblventa);
             posven.boton_imprimir_pos_VENTA(conn, idventa_select);
         }
@@ -361,7 +361,7 @@ public class FrmVenta extends javax.swing.JInternalFrame {
                 fk_idfuncionario = "0";
                 porcentaje_comision = "0";
                 monto_comision = "0";
-                precio_compra = eveJtab.getString_select(tblproducto, 3);
+                precio_compra = eveJtab.getString_select(tblproducto, 4);
             }
             fk_idventa = String.valueOf(idventa);
             String dato[] = {ord, tipo, porcentaje_comision, descripcion, precio, cant, total, es_producto, es_servicio, es_sum_punto,
@@ -623,6 +623,7 @@ public class FrmVenta extends javax.swing.JInternalFrame {
         btncantidad_3 = new javax.swing.JButton();
         btncantidad_2 = new javax.swing.JButton();
         btncantidad_1 = new javax.swing.JButton();
+        btnnuevo_servicio = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -639,6 +640,7 @@ public class FrmVenta extends javax.swing.JInternalFrame {
         btncant_pro_3 = new javax.swing.JButton();
         btncant_pro_4 = new javax.swing.JButton();
         btncant_pro_5 = new javax.swing.JButton();
+        btnnuevo_producto = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -1003,6 +1005,13 @@ public class FrmVenta extends javax.swing.JInternalFrame {
             }
         });
 
+        btnnuevo_servicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/ABM/mini_nuevo.png"))); // NOI18N
+        btnnuevo_servicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnnuevo_servicioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -1015,7 +1024,9 @@ public class FrmVenta extends javax.swing.JInternalFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtbuscar_servicio, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 107, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnnuevo_servicio)
+                        .addGap(0, 48, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1031,9 +1042,11 @@ public class FrmVenta extends javax.swing.JInternalFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtbuscar_servicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(txtbuscar_servicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnnuevo_servicio, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
@@ -1180,6 +1193,13 @@ public class FrmVenta extends javax.swing.JInternalFrame {
             }
         });
 
+        btnnuevo_producto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/ABM/mini_nuevo.png"))); // NOI18N
+        btnnuevo_producto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnnuevo_productoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -1192,7 +1212,9 @@ public class FrmVenta extends javax.swing.JInternalFrame {
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtbuscar_producto, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 100, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnnuevo_producto)
+                        .addGap(0, 41, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1209,9 +1231,11 @@ public class FrmVenta extends javax.swing.JInternalFrame {
             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtbuscar_producto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(txtbuscar_producto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnnuevo_producto, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1794,6 +1818,7 @@ public class FrmVenta extends javax.swing.JInternalFrame {
 
     private void btnnuevo_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnuevo_clienteActionPerformed
         // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmCliente());
     }//GEN-LAST:event_btnnuevo_clienteActionPerformed
 
     private void tblservicio_categoriaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblservicio_categoriaMouseReleased
@@ -1946,6 +1971,16 @@ public class FrmVenta extends javax.swing.JInternalFrame {
         seleccionar_tabla_venta();
     }//GEN-LAST:event_tblventaKeyReleased
 
+    private void btnnuevo_productoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnuevo_productoActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmProducto());
+    }//GEN-LAST:event_btnnuevo_productoActionPerformed
+
+    private void btnnuevo_servicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnuevo_servicioActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmServicio());
+    }//GEN-LAST:event_btnnuevo_servicioActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnactualizar_suma;
@@ -1966,6 +2001,8 @@ public class FrmVenta extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnimprimir_ticket;
     private javax.swing.JButton btnnuevo;
     private javax.swing.JButton btnnuevo_cliente;
+    private javax.swing.JButton btnnuevo_producto;
+    private javax.swing.JButton btnnuevo_servicio;
     private javax.swing.JComboBox<String> cmbfiltro_fecha;
     private javax.swing.JCheckBox jCestado_anulado;
     private javax.swing.JCheckBox jCestado_comision;

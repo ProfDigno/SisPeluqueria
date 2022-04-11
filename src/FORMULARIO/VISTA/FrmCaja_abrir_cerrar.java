@@ -49,6 +49,7 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
             int fk_idcaja_cierre=eveJtab.getInt_select_id(tblcaja_cierre);
             actualizar_tabla_otros(tblventa, fk_idcaja_cierre,"fk_idventa","in_monto_venta",gda.getTbl_venta());
             actualizar_tabla_otros(tblfuncionario_recibo, fk_idcaja_cierre,"fk_idfuncionario_recibo","eg_monto_recibo_funcionario",gda.getTbl_funcionario());
+            actualizar_tabla_otros(tblgastos, fk_idcaja_cierre,"fk_idgasto","eg_monto_gasto",gda.getTbl_gasto());
         }
     }
     void anchotabla_caja_detalle_otros(JTable tabla) {
@@ -114,6 +115,11 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tblfuncionario_recibo = new javax.swing.JTable();
         btnimprimir_recibo = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblgastos = new javax.swing.JTable();
+        btnimprimir_gasto = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -305,6 +311,59 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("RECIBO FUNCIONARIO", jPanel5);
 
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("GASTOS"));
+
+        tblgastos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(tblgastos);
+
+        btnimprimir_gasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/venta/ven_imprimir.png"))); // NOI18N
+        btnimprimir_gasto.setText("IMPRIMIR GASTO");
+        btnimprimir_gasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnimprimir_gastoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 909, Short.MAX_VALUE)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(btnimprimir_gasto)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnimprimir_gasto))
+        );
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("GASTOS", jPanel7);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -348,9 +407,14 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
          boton_imprimir_venta();
     }//GEN-LAST:event_btnimprimir_venta1ActionPerformed
 
+    private void btnimprimir_gastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnimprimir_gastoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnimprimir_gastoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnimprimir_caja_cierre;
+    private javax.swing.JButton btnimprimir_gasto;
     private javax.swing.JButton btnimprimir_recibo;
     private javax.swing.JButton btnimprimir_venta1;
     private javax.swing.JPanel jPanel1;
@@ -359,12 +423,16 @@ public class FrmCaja_abrir_cerrar extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable tblcaja_cierre;
     private javax.swing.JTable tblfuncionario_recibo;
+    private javax.swing.JTable tblgastos;
     private javax.swing.JTable tblventa;
     // End of variables declaration//GEN-END:variables
 }
