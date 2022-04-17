@@ -15,6 +15,7 @@ import Config_JSON.json_sql_actualizar;
 import Evento.Color.cla_color_palete;
 import Evento.Fecha.EvenFecha;
 import Evento.Jframe.EvenJFRAME;
+import Evento.Mensaje.EvenMensajeJoptionpane;
 import FORMULARIO.DAO.DAO_caja_cierre;
 import FORMULARIO.DAO.DAO_empresa;
 import FORMULARIO.ENTIDAD.empresa;
@@ -31,31 +32,26 @@ import javax.swing.JOptionPane;
  */
 public class FrmMenuPelu extends javax.swing.JFrame {
 
-    Connection conn = null;
-    ConnPostgres conPs = new ConnPostgres();
-    VariablesBD var = new VariablesBD();
-//    json_config config = new json_config();
-    json_sql_actualizar json_sql=new json_sql_actualizar();
-    EvenJFRAME evetbl = new EvenJFRAME();
-    EvenFecha evefec = new EvenFecha();
-    usuario ENTusu = new usuario();
-    cla_color_palete clacolor = new cla_color_palete();
-    EvenConexion eveconn = new EvenConexion();
-     private DAO_caja_cierre DAOcc=new DAO_caja_cierre();
-      private empresa ENTemp = new empresa();
+    private Connection conn = null;
+    private ConnPostgres conPs = new ConnPostgres();
+    private VariablesBD var = new VariablesBD();
+    private json_sql_actualizar json_sql = new json_sql_actualizar();
+    private EvenJFRAME evetbl = new EvenJFRAME();
+    private EvenFecha evefec = new EvenFecha();
+    private EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
+    private usuario ENTusu = new usuario();
+    private cla_color_palete clacolor = new cla_color_palete();
+    private EvenConexion eveconn = new EvenConexion();
+    private DAO_caja_cierre DAOcc = new DAO_caja_cierre();
+    private empresa ENTemp = new empresa();
     private DAO_empresa DAOemp = new DAO_empresa();
-//    dao_usuario dao_usu=new dao_usuario();
-//    cla_InvPro_compra_todos inv_com = new cla_InvPro_compra_todos();
-    json_imprimir_pos jsprint = new json_imprimir_pos();
-    json_array jsarr=new json_array();
-//    json_array jsarr=new json_array();
-    private String version_estatica="V:1.1";
+    private json_imprimir_pos jsprint = new json_imprimir_pos();
+    private json_array jsarr = new json_array();
+    private String version_estatica = "V:1.1";
 
     void abrir_formulario() {
-//        config.cargar_jsom_configuracion();
         jsprint.cargar_jsom_imprimir_pos();
         json_sql.cargar_jsom_sql_actualizar();
-//        jsarr.cargar_jsom_array();
         conPs.ConnectDBpostgres(false);
         conn = conPs.getConnPosgres();
         ENTusu.setGlobal_nombre("DIGNO");
@@ -63,7 +59,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         titulo_sistema();
         cargar_colores();
         actualizacion_version_v1();
-         DAOemp.cargar_empresa(conn, ENTemp, 1);
+        DAOemp.cargar_empresa(conn, ENTemp, 1);
         lblversion.setText(version_estatica);
     }
 
@@ -84,7 +80,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
 
     void titulo_sistema() {
         String titulo = " BD: " + var.getPsLocalhost() + "/" + var.getPsPort() + "/" + var.getPsNomBD()
-                + "/ Nombre:" ;
+                + "/ Nombre:";
         this.setTitle(titulo);
 
     }
@@ -101,8 +97,8 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         String sql = "DO $$ \n"
                 + "    BEGIN\n"
                 + "        BEGIN\n "
-                + json_sql.getSql_ahora()+"\n"
-                + json_sql.getUlt_sql()+"\n"
+                + json_sql.getSql_ahora() + "\n"
+                + json_sql.getUlt_sql() + "\n"
                 + "        EXCEPTION\n"
                 + "            WHEN duplicate_column THEN RAISE NOTICE 'duplicate_column.';\n"
                 + "        END;\n"
@@ -134,11 +130,16 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         btnventa = new javax.swing.JButton();
         btncaja_cierre = new javax.swing.JButton();
         btngasto = new javax.swing.JButton();
+        btncompra = new javax.swing.JButton();
+        btngrafico = new javax.swing.JButton();
         lblversion = new javax.swing.JLabel();
         lblusuario = new javax.swing.JLabel();
+        btncerrarcaja = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu_venta = new javax.swing.JMenu();
         jMenuItem_venta = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
         jMenu_compra = new javax.swing.JMenu();
         jMenuItem_compra = new javax.swing.JMenuItem();
         jMenuItem_proveedor = new javax.swing.JMenuItem();
@@ -146,6 +147,8 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         jMenuItem_producto = new javax.swing.JMenuItem();
         jMenuItem_producto_unidad = new javax.swing.JMenuItem();
         jMenuItem_producto_categoria = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
         jMenu_servicio = new javax.swing.JMenu();
         jMenuItem_servicio = new javax.swing.JMenuItem();
         jMenuItem_servicio_categoria = new javax.swing.JMenuItem();
@@ -156,6 +159,9 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         jMenu_funcionario = new javax.swing.JMenu();
         jMenuItem_funcionario = new javax.swing.JMenuItem();
         jMenuItem_funcionario_recibo = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenu_cliente = new javax.swing.JMenu();
         jMenuItem_cliente = new javax.swing.JMenuItem();
         jMenu_configuracion = new javax.swing.JMenu();
@@ -169,8 +175,11 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         jMenuItem_caja_detalle = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
@@ -227,6 +236,20 @@ public class FrmMenuPelu extends javax.swing.JFrame {
             }
         });
 
+        btncompra.setText("COMPRA");
+        btncompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncompraActionPerformed(evt);
+            }
+        });
+
+        btngrafico.setText("GRAFICO");
+        btngrafico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btngraficoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -241,12 +264,16 @@ public class FrmMenuPelu extends javax.swing.JFrame {
                     .addComponent(btnservicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btngasto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnfuncionario)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnfuncionario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btncompra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btncliente)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btncaja_cierre)
-                .addContainerGap(425, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btngrafico)
+                .addContainerGap(340, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -256,11 +283,13 @@ public class FrmMenuPelu extends javax.swing.JFrame {
                     .addComponent(btnservicio)
                     .addComponent(btnfuncionario)
                     .addComponent(btncliente)
-                    .addComponent(btncaja_cierre))
+                    .addComponent(btncaja_cierre)
+                    .addComponent(btngrafico))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnventa)
-                    .addComponent(btngasto))
+                    .addComponent(btngasto)
+                    .addComponent(btncompra))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
@@ -270,9 +299,18 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         lblusuario.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblusuario.setText("user");
 
+        btncerrarcaja.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btncerrarcaja.setText("CERRAR LA CAJA");
+        btncerrarcaja.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncerrarcajaActionPerformed(evt);
+            }
+        });
+
         escritorio.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         escritorio.setLayer(lblversion, javax.swing.JLayeredPane.DEFAULT_LAYER);
         escritorio.setLayer(lblusuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        escritorio.setLayer(btncerrarcaja, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout escritorioLayout = new javax.swing.GroupLayout(escritorio);
         escritorio.setLayout(escritorioLayout);
@@ -283,7 +321,8 @@ public class FrmMenuPelu extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblversion, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btncerrarcaja, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         escritorioLayout.setVerticalGroup(
@@ -294,7 +333,9 @@ public class FrmMenuPelu extends javax.swing.JFrame {
                 .addComponent(lblversion)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 452, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btncerrarcaja, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 403, Short.MAX_VALUE))
         );
 
         jMenu_venta.setText("VENTA");
@@ -307,11 +348,28 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         });
         jMenu_venta.add(jMenuItem_venta);
 
+        jMenu3.setText("INFORMES");
+
+        jMenuItem6.setText("VENTA FECHA CLIENTE");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem6);
+
+        jMenu_venta.add(jMenu3);
+
         jMenuBar1.add(jMenu_venta);
 
         jMenu_compra.setText("COMPRA");
 
         jMenuItem_compra.setText("COMPRA");
+        jMenuItem_compra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_compraActionPerformed(evt);
+            }
+        });
         jMenu_compra.add(jMenuItem_compra);
 
         jMenuItem_proveedor.setText("PROVEEDOR");
@@ -349,6 +407,18 @@ public class FrmMenuPelu extends javax.swing.JFrame {
             }
         });
         jMenu_producto.add(jMenuItem_producto_categoria);
+
+        jMenu1.setText("INFORME PRODUCTO");
+
+        jMenuItem3.setText("INVENTARIO VALORIZADO");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
+        jMenu_producto.add(jMenu1);
 
         jMenuBar1.add(jMenu_producto);
 
@@ -407,6 +477,26 @@ public class FrmMenuPelu extends javax.swing.JFrame {
 
         jMenuItem_funcionario_recibo.setText("RECIBO FUNCIONARIO");
         jMenu_funcionario.add(jMenuItem_funcionario_recibo);
+
+        jMenu2.setText("INFORME FUNCIONARIO");
+
+        jMenuItem4.setText("FILTRO COMISION ");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem4);
+
+        jMenuItem5.setText("PAGO DE COMISION");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem5);
+
+        jMenu_funcionario.add(jMenu2);
 
         jMenuBar1.add(jMenu_funcionario);
 
@@ -523,7 +613,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
 
     private void jMenuItem_producto_unidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_producto_unidadActionPerformed
         // TODO add your handling code here:
-         evetbl.abrir_TablaJinternal(new FrmProducto_unidad());
+        evetbl.abrir_TablaJinternal(new FrmProducto_unidad());
     }//GEN-LAST:event_jMenuItem_producto_unidadActionPerformed
 
     private void jMenuItem_producto_categoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_producto_categoriaActionPerformed
@@ -538,7 +628,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
 
     private void btnproductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnproductoActionPerformed
         // TODO add your handling code here:
-         evetbl.abrir_TablaJinternal(new FrmProducto());
+        evetbl.abrir_TablaJinternal(new FrmProducto());
     }//GEN-LAST:event_btnproductoActionPerformed
 
     private void jMenuItem_servicio_categoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_servicio_categoriaActionPerformed
@@ -553,7 +643,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
 
     private void btnservicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnservicioActionPerformed
         // TODO add your handling code here:
-         evetbl.abrir_TablaJinternal(new FrmServicio());
+        evetbl.abrir_TablaJinternal(new FrmServicio());
     }//GEN-LAST:event_btnservicioActionPerformed
 
     private void jMenuItem_funcionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_funcionarioActionPerformed
@@ -583,7 +673,7 @@ public class FrmMenuPelu extends javax.swing.JFrame {
 
     private void jMenuItem_config_puntajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_config_puntajeActionPerformed
         // TODO add your handling code here:
-         evetbl.abrir_TablaJinternal(new FrmConfiguracion_puntaje());
+        evetbl.abrir_TablaJinternal(new FrmConfiguracion_puntaje());
     }//GEN-LAST:event_jMenuItem_config_puntajeActionPerformed
 
     private void btnventaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnventaActionPerformed
@@ -603,21 +693,21 @@ public class FrmMenuPelu extends javax.swing.JFrame {
 
     private void jMenuItem_caja_abrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_caja_abrirActionPerformed
         // TODO add your handling code here:
-        if(DAOcc.getboo_existe_abierto_cargar_caja_cierre(conn)){
-            JDiaAbrir_Caja frm=new JDiaAbrir_Caja(null, true);
+        if (DAOcc.getboo_existe_abierto_cargar_caja_cierre(conn)) {
+            JDiaAbrir_Caja frm = new JDiaAbrir_Caja(null, true);
             frm.setVisible(true);
-        }else{
-            JOptionPane.showMessageDialog(null,"YA EXISTE UNA CAJA ABIERTO PRIMERO SE DEBE CERRAR");
+        } else {
+            JOptionPane.showMessageDialog(null, "YA EXISTE UNA CAJA ABIERTO PRIMERO SE DEBE CERRAR");
         }
-        
+
     }//GEN-LAST:event_jMenuItem_caja_abrirActionPerformed
 
     private void jMenuItem_caja_cerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_caja_cerrarActionPerformed
         // TODO add your handling code here:
-        if(!DAOcc.getboo_existe_abierto_cargar_caja_cierre(conn)){
-        evetbl.abrir_TablaJinternal(new FrmCaja_Cierre());
-        }else{
-            JOptionPane.showMessageDialog(null,"NO EXISTE UNA CAJA ABIERTO PRIMERO SE DEBE ABRIR");
+        if (!DAOcc.getboo_existe_abierto_cargar_caja_cierre(conn)) {
+            evetbl.abrir_TablaJinternal(new FrmCaja_Cierre());
+        } else {
+            JOptionPane.showMessageDialog(null, "NO EXISTE UNA CAJA ABIERTO PRIMERO SE DEBE ABRIR");
         }
     }//GEN-LAST:event_jMenuItem_caja_cerrarActionPerformed
 
@@ -645,6 +735,61 @@ public class FrmMenuPelu extends javax.swing.JFrame {
         // TODO add your handling code here:
         evetbl.abrir_TablaJinternal(new FrmGasto());
     }//GEN-LAST:event_btngastoActionPerformed
+
+    private void btncompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncompraActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmCompra());
+    }//GEN-LAST:event_btncompraActionPerformed
+
+    private void jMenuItem_compraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_compraActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmCompra());
+    }//GEN-LAST:event_jMenuItem_compraActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmRepInventarioVenta());
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmRepFuncioComision());
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmRepFuncioComisionPago());
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmRepVentaFecCli());
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void btncerrarcajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncerrarcajaActionPerformed
+        // TODO add your handling code here:
+        if (!DAOcc.getboo_existe_abierto_cargar_caja_cierre(conn)) {
+            evetbl.abrir_TablaJinternal(new FrmCaja_Cierre());
+        } else {
+            JOptionPane.showMessageDialog(null, "NO EXISTE UNA CAJA ABIERTO PRIMERO SE DEBE ABRIR");
+        }
+    }//GEN-LAST:event_btncerrarcajaActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        if (!DAOcc.getboo_existe_abierto_cargar_caja_cierre(conn)) {
+            if (evemen.MensajeGeneral_question("LA CAJA NO SE CERRO", "CERRAR SISTEMA", "CERRAR CAJA", "CERRAR SISTEMA")) {
+                evetbl.abrir_TablaJinternal(new FrmCaja_Cierre());
+            }else{
+                System.exit(0);
+            }
+        }
+    }//GEN-LAST:event_formWindowClosing
+
+    private void btngraficoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btngraficoActionPerformed
+        // TODO add your handling code here:
+        evetbl.abrir_TablaJinternal(new FrmGraficoTodo());
+    }//GEN-LAST:event_btngraficoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -690,16 +835,26 @@ public class FrmMenuPelu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btncaja_cierre;
+    private javax.swing.JButton btncerrarcaja;
     private javax.swing.JButton btncliente;
+    private javax.swing.JButton btncompra;
     private javax.swing.JButton btnfuncionario;
     private javax.swing.JButton btngasto;
+    private javax.swing.JButton btngrafico;
     private javax.swing.JButton btnproducto;
     private javax.swing.JButton btnservicio;
     private javax.swing.JButton btnventa;
     public static javax.swing.JDesktopPane escritorio;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem_caja_abrir;
     private javax.swing.JMenuItem jMenuItem_caja_cerrar;
     private javax.swing.JMenuItem jMenuItem_caja_detalle;

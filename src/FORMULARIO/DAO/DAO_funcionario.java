@@ -1,6 +1,7 @@
 package FORMULARIO.DAO;
 
 import BASEDATO.EvenConexion;
+import CONFIGURACION.Global_datos;
 import FORMULARIO.ENTIDAD.funcionario;
 import Evento.JasperReport.EvenJasperReport;
 import Evento.Jtable.EvenJtable;
@@ -19,6 +20,7 @@ public class DAO_funcionario {
     EvenJasperReport rep = new EvenJasperReport();
     EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
     EvenFecha evefec = new EvenFecha();
+    private Global_datos gda = new Global_datos();
     private String mensaje_insert = "FUNCIONARIO GUARDADO CORRECTAMENTE";
     private String mensaje_update = "FUNCIONARIO MODIFICADO CORECTAMENTE";
     private String sql_insert = "INSERT INTO funcionario(idfuncionario,fecha_creado,creado_por,orden,activo,"
@@ -30,7 +32,7 @@ public class DAO_funcionario {
     private String sql_select = "SELECT idfuncionario as id,"
             + "(nombre||'-'||apellido) as nombre,direccion,cedula,telefono,"
             + "to_char(total_comision,'999G999G999') as comision FROM funcionario "; //5,45,20,10,10,10
-    private String sql_select_ord=" desc;";
+    private String sql_select_ord = " desc;";
     private String sql_cargar = "SELECT idfuncionario,fecha_creado,creado_por,orden,activo,"
             + "nombre,apellido,cedula,direccion,telefono,"
             + "tiene_comision,total_comision,tiene_salario,total_salario FROM funcionario WHERE idfuncionario=";
@@ -119,22 +121,69 @@ public class DAO_funcionario {
     }
 
     public void actualizar_tabla_funcionario(Connection conn, JTable tbltabla) {
-        eveconn.Select_cargar_jtable(conn, sql_select+"order by 1 "+sql_select_ord, tbltabla);
+        eveconn.Select_cargar_jtable(conn, sql_select + "order by 1 " + sql_select_ord, tbltabla);
         ancho_tabla_funcionario(tbltabla);
     }
 
     public void ancho_tabla_funcionario(JTable tbltabla) {
-        int Ancho[] = {5,35,30,10,10,10};
+        int Ancho[] = {5, 35, 30, 10, 10, 10};
         evejt.setAnchoColumnaJtable(tbltabla, Ancho);
     }
-    public void buscar_tabla_funcionario(Connection conn, JTable tbltabla, JTextField txtbuscar,String columna) {
+
+    public void buscar_tabla_funcionario(Connection conn, JTable tbltabla, JTextField txtbuscar, String columna) {
         if (txtbuscar.getText().trim().length() > 1) {
             String buscar = txtbuscar.getText();
             String sql = sql_select
-                    + " where "+columna+" ilike'%" + buscar + "%' "
-                    + "order by "+columna+sql_select_ord;
+                    + " where " + columna + " ilike'%" + buscar + "%' "
+                    + "order by " + columna + sql_select_ord;
             eveconn.Select_cargar_jtable(conn, sql, tbltabla);
             ancho_tabla_funcionario(tbltabla);
         }
+    }
+
+    public void imprimir_rep_funcionario_comision(Connection conn, String filtro) {
+        String sql = "select v.idventa as idv,  \n"
+                + "to_char(v.fecha_creado,'"+evefec.getPsql_fec()+"') as fecha,\n"
+                + "c.nombre as cliente,\n"
+                + "(f.nombre||' '||f.apellido) as funcionario,\n"
+                + "iv.descripcion as servicio,\n"
+                + "(iv.precio_venta*iv.cantidad) as tt_servicio,\n"
+                + "to_char(iv.porcentaje_comision,'99 %') as por,\n"
+                + "iv.monto_comision as comision,\n"
+                + "((iv.precio_venta*iv.cantidad)-iv.monto_comision) as ganancia\n"
+                + "from venta v,cliente c,item_venta iv,funcionario f  \n"
+                + "where v.fk_idcliente=c.idcliente \n"
+                + "and v.idventa=iv.fk_idventa\n"
+                + "and iv.fk_idfuncionario=f.idfuncionario \n"
+                + "and (v.estado='" + gda.getEstado_emitido() + "' or v.estado='" + gda.getEstado_comision() + "') \n"
+                + "and iv.es_servicio=true \n" + filtro
+                + " order by f.nombre desc, v.fecha_creado desc,iv.descripcion desc;";
+        String titulonota = "FUNCIONARIO COMISION";
+        String direccion = "src/REPORTE/FUNCIONARIO/repFuncioComision.jrxml";
+        rep.imprimirjasper(conn, sql, titulonota, direccion);
+    }
+
+    public void imprimir_rep_funcionario_comision_pagos(Connection conn, String filtro) {
+        String sql = "select fc.idfuncionario_comision as idf,\n"
+                + "to_char(fc.fecha_creado,'"+evefec.getPsql_fec_hs()+"') as fec_cre,fc.descripcion,\n"
+                + "fc.monto_comision as comision,\n"
+                + "fc.monto_pagado as pagado,\n"
+                + "(fc.monto_pagado-fc.monto_comision) as saldo,"
+                + "fc.estado as est_comi,\n"
+                + "case when fc.es_pagado=true then to_char(fc.fecha_pagado,'"+evefec.getPsql_fec_hs()+"') else 'FALTA PAGAR' end as fec_pago,\n"
+                + "fgc.idfuncionario_grupo_comision as idfgs,\n"
+                + "(f.nombre||' '||f.apellido) as funcionario, \n"
+                + "to_char(fgc.fecha_inicio,'"+evefec.getPsql_fec_hs()+"') as fec_ini,\n"
+                + "to_char(fgc.fecha_fin,'"+evefec.getPsql_fec_hs()+"') as fec_fin,\n"
+                + "fgc.estado as est_gru \n"
+                + "from funcionario_comision fc,funcionario_grupo_comision fgc,funcionario f  \n"
+                + "where fc.fk_idfuncionario_grupo_comision=fgc.idfuncionario_grupo_comision\n"
+                + "and fgc.fk_idfuncionario=f.idfuncionario \n"
+                + "and (fc.estado='" + gda.getEstado_abierto() + "' or fc.estado='" + gda.getEstado_pagado()+ "')\n"
+                + "and fgc.es_abierto=true\n"+filtro
+                + " order by f.nombre desc,fgc.idfuncionario_grupo_comision desc,fc.idfuncionario_comision desc;";
+        String titulonota = "FUNCIONARIO COMISION PAGADOS";
+        String direccion = "src/REPORTE/FUNCIONARIO/repFuncioComisionPago.jrxml";
+        rep.imprimirjasper(conn, sql, titulonota, direccion);
     }
 }

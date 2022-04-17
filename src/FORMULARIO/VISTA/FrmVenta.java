@@ -39,6 +39,13 @@ public class FrmVenta extends javax.swing.JInternalFrame {
     private EvenJtable eveJtab = new EvenJtable();
     private EvenConexion eveconn = new EvenConexion();
     private EvenFecha evefec = new EvenFecha();
+    private ClaVarBuscar vbus = new ClaVarBuscar();
+    private Global_datos gda = new Global_datos();
+    private EvenJTextField evejtf = new EvenJTextField();
+    private DefaultTableModel model_itemf = new DefaultTableModel();
+    private EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
+    private Connection conn = ConnPostgres.getConnPosgres();
+    private cla_color_palete clacolor = new cla_color_palete();
     private venta ENTven = new venta();
     private DAO_venta DAOven = new DAO_venta();
     private BO_venta BOven = new BO_venta();
@@ -58,14 +65,10 @@ public class FrmVenta extends javax.swing.JInternalFrame {
     private DAO_funcionario_comision DAOfc = new DAO_funcionario_comision();
     private caja_detalle ENTcd = new caja_detalle();
     private DAO_caja_detalle DAOcd = new DAO_caja_detalle();
-    private EvenJTextField evejtf = new EvenJTextField();
-    private DefaultTableModel model_itemf = new DefaultTableModel();
-    private ClaVarBuscar vbus = new ClaVarBuscar();
-    private Global_datos gda = new Global_datos();
+    
+    
     private PosImprimir_Venta posven = new PosImprimir_Venta();
-    private EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
-    Connection conn = ConnPostgres.getConnPosgres();
-    cla_color_palete clacolor = new cla_color_palete();
+    
     private String nombre_formulario = "VENTA";
 //    String creado_por = "DIGNO";
     private static int fk_idcliente;

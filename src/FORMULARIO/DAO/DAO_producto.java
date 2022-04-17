@@ -43,14 +43,21 @@ public class DAO_producto {
             + "ult_venta,ult_compra,insumo,cantidad_uso,precio_por_uso,porcentaje_comision,"
             + "fk_idproducto_categoria,fk_idproducto_unidad "
             + "FROM producto WHERE idproducto=";
-private String sql_select_venta = "select s.idproducto as idp,(sc.nombre||'-'||s.nombre) as producto,"
+    private String sql_select_venta = "select s.idproducto as idp,(sc.nombre||'-'||s.nombre) as producto,"
             + "TRIM(to_char(s.stock_actual,'999999')) as sto,"
             + "TRIM(to_char(s.precio_venta,'999G999G999')) as precio,s.precio_compra \n"
             + "from producto s,producto_categoria sc  \n"
             + "where s.fk_idproducto_categoria=sc.idproducto_categoria \n"
             + "and s.activo=true\n";
-
+    private String sql_select_compra = "select s.idproducto as idp,s.cod_barra,(sc.nombre||'-'||s.nombre) as producto,"
+            + "TRIM(to_char(s.stock_actual,'999999')) as sto,"
+            + "TRIM(to_char(s.precio_compra,'999G999G999')) as pcompra, \n"
+            + "TRIM(to_char(s.precio_venta,'999G999G999')) as pventa \n"
+            + "from producto s,producto_categoria sc  \n"
+            + "where s.fk_idproducto_categoria=sc.idproducto_categoria \n"
+            + "and s.activo=true\n";
     private String sql_select_ord = " order by s.orden desc;";
+
     public void insertar_producto(Connection conn, producto prod) {
         prod.setC1idproducto(eveconn.getInt_ultimoID_mas_uno(conn, prod.getTb_producto(), prod.getId_idproducto()));
         String titulo = "insertar_producto";
@@ -156,26 +163,27 @@ private String sql_select_venta = "select s.idproducto as idp,(sc.nombre||'-'||s
     }
 
     public void actualizar_tabla_producto(Connection conn, JTable tbltabla) {
-        eveconn.Select_cargar_jtable(conn, sql_select+"order by 1 "+ jsonp.getOrder_select_prod(), tbltabla);
+        eveconn.Select_cargar_jtable(conn, sql_select + "order by 1 " + jsonp.getOrder_select_prod(), tbltabla);
         ancho_tabla_producto(tbltabla);
     }
 
     public void ancho_tabla_producto(JTable tbltabla) {
-        int Ancho[] = {5,15,10,25,10, 8, 8, 8, 8};
+        int Ancho[] = {5, 15, 10, 25, 10, 8, 8, 8, 8};
         evejt.setAnchoColumnaJtable(tbltabla, Ancho);
     }
 
-    public void buscar_tabla_producto(Connection conn, JTable tbltabla, JTextField txtbuscar,String columna) {
+    public void buscar_tabla_producto(Connection conn, JTable tbltabla, JTextField txtbuscar, String columna) {
         if (txtbuscar.getText().trim().length() > 1) {
             String buscar = txtbuscar.getText();
             String sql = sql_select
-                    + " and "+columna+" ilike'%" + buscar + "%' "
-                    + "order by "+columna+jsonp.getOrder_select_prod();
+                    + " and " + columna + " ilike'%" + buscar + "%' "
+                    + "order by " + columna + jsonp.getOrder_select_prod();
             eveconn.Select_cargar_jtable(conn, sql, tbltabla);
             ancho_tabla_producto(tbltabla);
         }
     }
-    public void actualizar_tabla_producto_venta(Connection conn, JTable tbltabla,String filtro) {
+
+    public void actualizar_tabla_producto_venta(Connection conn, JTable tbltabla, String filtro) {
         String sql = sql_select_venta
                 + filtro
                 + sql_select_ord;
@@ -184,12 +192,71 @@ private String sql_select_venta = "select s.idproducto as idp,(sc.nombre||'-'||s
     }
 
     public void ancho_tabla_producto_venta(JTable tbltabla) {
-        int Ancho[] = {5, 65,15, 15,1};
+        int Ancho[] = {5, 65, 15, 15, 1};
         evejt.setAnchoColumnaJtable(tbltabla, Ancho);
         evejt.ocultar_columna(tbltabla, 4);
     }
-    public void update_stock_actual_producto(Connection conn,String cantidad,String idproducto){
-        String sql="update producto set stock_actual=(stock_actual-"+cantidad+") where idproducto="+idproducto+";";
+
+    public void update_stock_actual_producto_descontar(Connection conn, String cantidad, String idproducto) {
+        String sql = "update producto set stock_actual=(stock_actual-" + cantidad + ") where idproducto=" + idproducto + ";";
         eveconn.SQL_execute_libre(conn, sql);
+    }
+
+    public void update_stock_actual_producto_aumentar(Connection conn, String cantidad, String idproducto) {
+        System.out.println("cantidad:" + cantidad);
+        String sql = "update producto set stock_actual=(stock_actual+" + cantidad + ") where idproducto=" + idproducto + ";";
+        eveconn.SQL_execute_libre(conn, sql);
+    }
+
+    public void actualizar_tabla_producto_compra(Connection conn, JTable tbltabla, String filtro) {
+        String sql = sql_select_compra
+                + filtro
+                + sql_select_ord;
+        eveconn.Select_cargar_jtable(conn, sql, tbltabla);
+        ancho_tabla_producto_compra(tbltabla);
+    }
+
+    public void ancho_tabla_producto_compra(JTable tbltabla) {
+        int Ancho[] = {5, 11, 50, 10, 12, 12};
+        evejt.setAnchoColumnaJtable(tbltabla, Ancho);
+    }
+
+    public void imprimir_rep_inventario_venta(Connection conn, String filtro) {
+        String sql = "select p.idproducto as idp,\n"
+                + "to_char(p.fecha_creado,'yyyy-MM-dd') as fec_crea,\n"
+                + "p.cod_barra as codbarra,\n"
+                + "pc.nombre as categoria,\n"
+                + "p.nombre as producto,\n"
+                + "pu.nombre as unidad,\n"
+                + "p.precio_venta as pventa,\n"
+                + "p.stock_actual as st_act,\n"
+                + "(p.stock_actual*p.precio_venta) as total_venta\n"
+                + "from producto p,producto_categoria pc,producto_unidad pu  \n"
+                + "where p.fk_idproducto_categoria=pc.idproducto_categoria \n"
+                + "and p.fk_idproducto_unidad=pu.idproducto_unidad \n"
+                + "and p.activo=true\n"+filtro
+                + " order by pc.nombre desc,p.nombre desc;";
+        String titulonota = "INVENTARIO VENTA";
+        String direccion = "src/REPORTE/PRODUCTO/repInventarioVenta.jrxml";
+        rep.imprimirjasper(conn, sql, titulonota, direccion);
+    }
+    public void imprimir_rep_inventario_compra(Connection conn, String filtro) {
+        String sql = "select p.idproducto as idp,\n"
+                + "to_char(p.fecha_creado,'yyyy-MM-dd') as fec_crea,\n"
+                + "p.cod_barra as codbarra,\n"
+                + "pc.nombre as categoria,\n"
+                + "p.nombre as producto,\n"
+                + "pu.nombre as unidad,\n"
+                + "p.precio_compra as pventa,\n"
+                + "p.stock_actual as st_act,\n"
+                + "(p.stock_actual*p.precio_compra) as total_venta\n"
+                + "from producto p,producto_categoria pc,producto_unidad pu  \n"
+                + "where p.fk_idproducto_categoria=pc.idproducto_categoria \n"
+                + "and p.fk_idproducto_unidad=pu.idproducto_unidad \n"
+                + "and p.activo=true\n"+filtro
+                + " order by pc.nombre desc,p.nombre desc;";
+        String titulonota = "INVENTARIO COMPRA";
+        String direccion = "src/REPORTE/PRODUCTO/repInventarioCompra.jrxml";
+        rep.imprimirjasper(conn, sql, titulonota, direccion);
     }
 }

@@ -1,0 +1,349 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package FORMULARIO.VISTA;
+
+import BASEDATO.EvenConexion;
+import BASEDATO.LOCAL.ConnPostgres;
+import Config_JSON.json_producto;
+import Evento.JTextField.EvenJTextField;
+import Evento.Jframe.EvenJFRAME;
+import Evento.Jtable.EvenJtable;
+import Evento.Mensaje.EvenMensajeJoptionpane;
+import FORMULARIO.BO.BO_producto;
+import FORMULARIO.DAO.DAO_producto;
+import FORMULARIO.DAO.DAO_producto_categoria;
+import FORMULARIO.DAO.DAO_producto_unidad;
+import FORMULARIO.ENTIDAD.producto;
+import FORMULARIO.ENTIDAD.producto_categoria;
+import FORMULARIO.ENTIDAD.producto_unidad;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import javax.swing.JTable;
+
+/**
+ *
+ * @author Digno
+ */
+public class FrmRepInventarioVenta extends javax.swing.JInternalFrame {
+
+    private EvenJFRAME evetbl = new EvenJFRAME();
+    private EvenJtable eveJtab = new EvenJtable();
+    private EvenJTextField evejte = new EvenJTextField();
+    private EvenConexion eveconn = new EvenConexion();
+    private producto ENTpro = new producto();
+    private DAO_producto DAOpro = new DAO_producto();
+    private BO_producto BOpro = new BO_producto();
+    private EvenJTextField evejtf = new EvenJTextField();
+    private producto_categoria ENTpc = new producto_categoria();
+    private DAO_producto_categoria DAOpc = new DAO_producto_categoria();
+    private producto_unidad ENTpu = new producto_unidad();
+    private DAO_producto_unidad DAOpu = new DAO_producto_unidad();
+    private json_producto jsonp = new json_producto();
+    EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
+    Connection conn = ConnPostgres.getConnPosgres();
+    private String nombre_formulario = "INVENTARIO VALORIZADO";
+
+    private void abrir_formulario() {
+        this.setTitle(nombre_formulario);
+        evetbl.centrar_formulario_internalframa(this);
+        actualizar_categoria();
+    }
+
+    private void boton_imprimir(boolean imprimir) {
+        String filtro = "";
+        String filtro_stock = "";
+        if (tblcategoria.getSelectedRow() >= 0) {
+            int fk_idproducto_categoria = eveJtab.getInt_select_id(tblcategoria);
+            String categeria = " and p.fk_idproducto_categoria=" + fk_idproducto_categoria;
+            filtro = filtro + categeria;
+        }
+        if (jCstock_positivo.isSelected() && !jCstock_cero_nega.isSelected()) {
+            filtro_stock = " and p.stock_actual>0 ";
+            filtro = filtro + filtro_stock;
+        }
+        if (!jCstock_positivo.isSelected() && jCstock_cero_nega.isSelected()) {
+            filtro_stock = " and p.stock_actual<=0 ";
+            filtro = filtro + filtro_stock;
+        }
+        if (jRpor_venta.isSelected()) {
+            suma_total_inventario("p.precio_venta", filtro);
+        }
+        if (jRpor_compra.isSelected()) {
+            suma_total_inventario("p.precio_compra", filtro);
+        }
+        if (imprimir) {
+            if (jRpor_venta.isSelected()) {
+                DAOpro.imprimir_rep_inventario_venta(conn, filtro);
+            }
+            if (jRpor_compra.isSelected()) {
+                DAOpro.imprimir_rep_inventario_compra(conn, filtro);
+            }
+
+        }
+    }
+
+    private void actualizar_categoria() {
+        String sql = "select pc.idproducto_categoria as idc,pc.nombre as categoria \n"
+                + "from producto_categoria pc \n"
+                + "where pc.activo=true \n"
+                + "order by pc.nombre desc;";
+        eveconn.Select_cargar_jtable(conn, sql, tblcategoria);
+        ancho_tabla_producto_categoria(tblcategoria);
+    }
+
+    private void suma_total_inventario(String campoprecio, String filtro) {
+        String titulo = "suma_total_inventario";
+        double total = 0;
+        String sql = "select sum(p.stock_actual*" + campoprecio + ") as total \n"
+                + "from producto p,producto_categoria pc,producto_unidad pu  \n"
+                + "where p.fk_idproducto_categoria=pc.idproducto_categoria \n"
+                + "and p.fk_idproducto_unidad=pu.idproducto_unidad \n"
+                + "and p.activo=true " + filtro;
+        try {
+            ResultSet rs = eveconn.getResulsetSQL(conn, sql, titulo);
+            if (rs.next()) {
+                total = rs.getDouble(1);
+                jFtotal_por_venta.setValue(total);
+            }
+        } catch (Exception e) {
+            evemen.mensaje_error(e, sql, titulo);
+        }
+    }
+
+    public void ancho_tabla_producto_categoria(JTable tbltabla) {
+        int Ancho[] = {10, 90};
+        eveJtab.setAnchoColumnaJtable(tbltabla, Ancho);
+    }
+
+    public FrmRepInventarioVenta() {
+        initComponents();
+        abrir_formulario();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        gru_cv = new javax.swing.ButtonGroup();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblcategoria = new javax.swing.JTable();
+        btncategoria_todos = new javax.swing.JButton();
+        btnimprimir = new javax.swing.JButton();
+        jCstock_positivo = new javax.swing.JCheckBox();
+        jCstock_cero_nega = new javax.swing.JCheckBox();
+        jFtotal_por_venta = new javax.swing.JFormattedTextField();
+        jRpor_venta = new javax.swing.JRadioButton();
+        jRpor_compra = new javax.swing.JRadioButton();
+
+        setClosable(true);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
+        });
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("TABLAS"));
+
+        tblcategoria.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblcategoria.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tblcategoriaMouseReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblcategoria);
+
+        btncategoria_todos.setText("TODOS");
+        btncategoria_todos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncategoria_todosActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btncategoria_todos)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btncategoria_todos))
+        );
+
+        btnimprimir.setText("IMPRIMIR ");
+        btnimprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnimprimirActionPerformed(evt);
+            }
+        });
+
+        jCstock_positivo.setText("STOCK POSITIVO");
+        jCstock_positivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCstock_positivoActionPerformed(evt);
+            }
+        });
+
+        jCstock_cero_nega.setText("STOCK CERO Y NEGATIVO");
+        jCstock_cero_nega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCstock_cero_negaActionPerformed(evt);
+            }
+        });
+
+        jFtotal_por_venta.setBorder(javax.swing.BorderFactory.createTitledBorder("TOTAL INVENTARIO"));
+        jFtotal_por_venta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        jFtotal_por_venta.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jFtotal_por_venta.setFont(new java.awt.Font("Stencil", 0, 24)); // NOI18N
+
+        gru_cv.add(jRpor_venta);
+        jRpor_venta.setSelected(true);
+        jRpor_venta.setText("POR VENTA");
+        jRpor_venta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRpor_ventaActionPerformed(evt);
+            }
+        });
+
+        gru_cv.add(jRpor_compra);
+        jRpor_compra.setText("POR COMPRA");
+        jRpor_compra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRpor_compraActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnimprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jFtotal_por_venta, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jCstock_cero_nega)
+                            .addComponent(jCstock_positivo)
+                            .addComponent(jRpor_venta)
+                            .addComponent(jRpor_compra))
+                        .addGap(0, 0, Short.MAX_VALUE))))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jFtotal_por_venta, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jCstock_cero_nega)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCstock_positivo)
+                .addGap(36, 36, 36)
+                .addComponent(jRpor_venta)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRpor_compra)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnimprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnimprimirActionPerformed
+        // TODO add your handling code here:
+        boton_imprimir(true);
+    }//GEN-LAST:event_btnimprimirActionPerformed
+
+    private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        // TODO add your handling code here:
+        ancho_tabla_producto_categoria(tblcategoria);
+    }//GEN-LAST:event_formInternalFrameOpened
+
+    private void jCstock_cero_negaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCstock_cero_negaActionPerformed
+        // TODO add your handling code here:
+        boton_imprimir(false);
+    }//GEN-LAST:event_jCstock_cero_negaActionPerformed
+
+    private void jCstock_positivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCstock_positivoActionPerformed
+        // TODO add your handling code here:
+        boton_imprimir(false);
+    }//GEN-LAST:event_jCstock_positivoActionPerformed
+
+    private void btncategoria_todosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncategoria_todosActionPerformed
+        // TODO add your handling code here:
+        actualizar_categoria();
+        boton_imprimir(false);
+    }//GEN-LAST:event_btncategoria_todosActionPerformed
+
+    private void tblcategoriaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblcategoriaMouseReleased
+        // TODO add your handling code here:
+        boton_imprimir(false);
+    }//GEN-LAST:event_tblcategoriaMouseReleased
+
+    private void jRpor_ventaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRpor_ventaActionPerformed
+        // TODO add your handling code here:
+        boton_imprimir(false);
+    }//GEN-LAST:event_jRpor_ventaActionPerformed
+
+    private void jRpor_compraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRpor_compraActionPerformed
+        // TODO add your handling code here:
+        boton_imprimir(false);
+    }//GEN-LAST:event_jRpor_compraActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btncategoria_todos;
+    private javax.swing.JButton btnimprimir;
+    private javax.swing.ButtonGroup gru_cv;
+    private javax.swing.JCheckBox jCstock_cero_nega;
+    private javax.swing.JCheckBox jCstock_positivo;
+    private javax.swing.JFormattedTextField jFtotal_por_venta;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton jRpor_compra;
+    private javax.swing.JRadioButton jRpor_venta;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblcategoria;
+    // End of variables declaration//GEN-END:variables
+}

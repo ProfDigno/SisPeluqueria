@@ -7,5 +7,5 @@
 "direc_dump":"C:\\Program Files\\PostgreSQL\\13\\bin\\pg_dump.exe",
 "direc_backup":"backup\\",
 "nombre_backup":"bdpeluqueria_",
-"crear_backup":"NO"
+"crear_backup":"SI"
 }

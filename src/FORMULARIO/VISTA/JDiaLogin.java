@@ -28,29 +28,23 @@ public class JDiaLogin extends javax.swing.JDialog {
     /**
      * Creates new form JDiaLogin
      */
-    EvenJFRAME evetbl = new EvenJFRAME();
-    usuario ENTusu = new usuario();
-    BO_usuario bo_usu = new BO_usuario();
-    DAO_usuario dao_usu = new DAO_usuario();//dao_usuario
-    EvenJTextField evejtf = new EvenJTextField();
-    EvenMensajeJoptionpane evemsj =new EvenMensajeJoptionpane();
-    Connection conn = ConnPostgres.getConnPosgres();
-    Connection connser = ConnPostgres.getConnPosgres();
-    EvenConexion eveconn = new EvenConexion();
-    VariablesBD var = new VariablesBD();
-//    entidad_caja_cierre cjcie = new entidad_caja_cierre();
-//    dao_caja_cierre cjcie_dao = new dao_caja_cierre();
-    cla_color_palete clacolor = new cla_color_palete();
-//    dao_pro_producto dao_pro = new dao_pro_producto();
-//    DAO_backup bdao = new DAO_backup();
-//    private int ano_actual;
+    private EvenJFRAME evetbl = new EvenJFRAME();
+    private usuario ENTusu = new usuario();
+    private BO_usuario bo_usu = new BO_usuario();
+    private DAO_usuario dao_usu = new DAO_usuario();//dao_usuario
+    private EvenJTextField evejtf = new EvenJTextField();
+    private EvenMensajeJoptionpane evemsj = new EvenMensajeJoptionpane();
+    private Connection conn = ConnPostgres.getConnPosgres();
+    private EvenConexion eveconn = new EvenConexion();
+    private VariablesBD var = new VariablesBD();
+    private DAO_caja_cierre DAOcc = new DAO_caja_cierre();
+    private cla_color_palete clacolor = new cla_color_palete();
 
     /**
      * Creates new form FrmZonaDelivery
      */
     void abrir_formulario() {
         this.setTitle("INGRESAR USUARIO");
-//        ano_actual=eveconn.getInt_ano_actual(conn);
         color_formulario();
         habilitar_evento_menu_bloquear();
     }
@@ -72,9 +66,13 @@ public class JDiaLogin extends javax.swing.JDialog {
     void buscar_usuario() {
         if (dao_usu.getBoolean_buscar_usuario_existente(conn, ENTusu)) {
             JOptionPane.showMessageDialog(this, "BIENVENIDO\n" + ENTusu.getGlobal_nombre());
-            FrmMenuPelu.lblusuario.setText(ENTusu.getGlobal_nombre()+" :"+ENTusu.getGlobal_nivel());
+            FrmMenuPelu.lblusuario.setText(ENTusu.getGlobal_nombre() + " :" + ENTusu.getGlobal_nivel());
+            if (DAOcc.getboo_existe_abierto_cargar_caja_cierre(conn)) {
+                JDiaAbrir_Caja frm = new JDiaAbrir_Caja(null, true);
+                frm.setVisible(true);
+            }
             habilitar_evento_menu();
-            if(var.getPsCrea_backup().equals("SI")){
+            if (var.getPsCrea_backup().equals("SI")) {
                 evetbl.abrir_TablaJinternal(new FrmCrearBackup());
             }
             this.dispose();
@@ -94,13 +92,13 @@ public class JDiaLogin extends javax.swing.JDialog {
             buscar_usuario();
         }
     }
+
     void habilitar_evento_menu_bloquear() {
-
 //        FrmMenuPelu.jMenu_gasto.setEnabled(false);
-
     }
+
     void habilitar_evento_menu() {
-        
+
     }
 
     public JDiaLogin(java.awt.Frame parent, boolean modal) {
@@ -243,7 +241,7 @@ public class JDiaLogin extends javax.swing.JDialog {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        if(evemsj.MensajeGeneral_question("DESEAS SALIR DEL SISTEMA","SALIR", "ACEPTAR", "CANCELAR")){
+        if (evemsj.MensajeGeneral_question("DESEAS SALIR DEL SISTEMA", "SALIR", "ACEPTAR", "CANCELAR")) {
             System.exit(0);
         }
     }//GEN-LAST:event_formWindowClosing

@@ -17,7 +17,13 @@
 	"FrmCaja_Cierre#si",
 	"FrmCaja_abrir_cerrar#si",
 	"FrmEmpresa#si",
-	"FrmUsuario#si"
+	"FrmUsuario#si",
+	"FrmCompra#si",
+	"FrmRepInventarioVenta#si",
+	"FrmRepFuncioComision#si",
+	"FrmRepFuncioComisionPago#si",
+	"FrmRepVentaFecCli#si",
+	"FrmGraficoTodo#si"
 	],
 	"VENTA":[
 	"FrmCrearBackup#no",
@@ -37,6 +43,12 @@
 	"FrmCaja_Cierre#no",
 	"FrmCaja_abrir_cerrar#no",
 	"FrmEmpresa#no",
-	"FrmUsuario#no"
+	"FrmUsuario#no",
+	"FrmCompra#no",
+	"FrmRepInventarioVenta#no",
+	"FrmRepFuncioComision#no",
+	"FrmRepFuncioComisionPago#no",
+	"FrmRepVentaFecCli#no",
+	"FrmGraficoTodo#no"
 	]
 }

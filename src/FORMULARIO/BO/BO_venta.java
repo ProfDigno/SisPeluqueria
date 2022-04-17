@@ -23,7 +23,7 @@ public class BO_venta {
 
     public boolean getboo_insertar_venta(venta ven, JTable tbltabla,caja_detalle ENTcd) {
         boolean guardado=false;
-        String titulo = "insertar_venta";
+        String titulo = "getboo_insertar_venta";
         Connection conn = ConnPostgres.getConnPosgres();
         try {
             if (conn.getAutoCommit()) {
@@ -32,7 +32,6 @@ public class BO_venta {
             DAOven.insertar_venta(conn, ven);
             DAOiv.insertar_item_venta_de_tabla(conn, tbltabla,ven);
             DAOcd.insertar_caja_detalle(conn, ENTcd);
-//            ven_dao.actualizar_tabla_venta(conn, tbltabla);
             conn.commit();
             guardado=true;
         } catch (SQLException e) {
@@ -61,6 +60,7 @@ public class BO_venta {
                 DAOcd.anular_venta_update_caja_detalle(conn, ENTcd);
                 DAOfc.anular_update_funcionario_comision(conn, ENTfc);
                 DAOfc.update_total_comision_funcionario_de_venta(conn, ENTven.getC1idventa());
+                DAOiv.anular_item_venta(conn, ENTven.getC1idventa());
                 anulado=true;
                 conn.commit();
             } catch (SQLException e) {

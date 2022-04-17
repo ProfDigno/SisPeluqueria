@@ -34,8 +34,9 @@ public class DAO_venta {
             + "puntaje_cliente,genera_puntaje,uso_puntaje,"
             + "fk_idcliente,fk_idconfiguracion_puntaje,fk_idusuario "
             + "FROM venta WHERE idventa=";
-    private String sql_select_orden=" order by 1 desc;";
+    private String sql_select_orden = " order by 1 desc;";
     private String sql_update_anular = "UPDATE venta SET estado=? WHERE idventa=?;";
+
     public void insertar_venta(Connection conn, venta ven) {
         ven.setC1idventa(eveconn.getInt_ultimoID_mas_uno(conn, ven.getTb_venta(), ven.getId_idventa()));
         String titulo = "insertar_venta";
@@ -122,15 +123,16 @@ public class DAO_venta {
         }
     }
 
-    public void actualizar_tabla_venta(Connection conn, JTable tbltabla,String filtro) {
-        eveconn.Select_cargar_jtable(conn, sql_select+filtro+sql_select_orden, tbltabla);
+    public void actualizar_tabla_venta(Connection conn, JTable tbltabla, String filtro) {
+        eveconn.Select_cargar_jtable(conn, sql_select + filtro + sql_select_orden, tbltabla);
         ancho_tabla_venta(tbltabla);
     }
 
     public void ancho_tabla_venta(JTable tbltabla) {
-        int Ancho[] = {5,11,22,22,8,8,8,8,8,8};
+        int Ancho[] = {5, 11, 22, 22, 8, 8, 8, 8, 8, 8};
         evejt.setAnchoColumnaJtable(tbltabla, Ancho);
     }
+
     public void estado_update_venta(Connection conn, venta ven) {
         String titulo = "anular_update_venta";
         PreparedStatement pst = null;
@@ -144,5 +146,21 @@ public class DAO_venta {
         } catch (Exception e) {
             evemen.mensaje_error(e, sql_update_anular + "\n" + ven.toString(), titulo);
         }
+    }
+
+    public void imprimir_rep_venta_fec_cli(Connection conn, String filtro) {
+        String sql = "select v.idventa as idv,\n"
+                + "to_char(v.fecha_creado,'"+evefec.getPsql_fec_hs()+"') as fecha,\n"
+                + "(c.nombre||' '||c.apellido) as cliente,\n"
+                + "c.ruc as ruc,\n"
+                + "v.monto_descuento as descuento,\n"
+                + "v.monto_pagado as pagado,\n"
+                + "v.estado as estado\n"
+                + "from venta v,cliente c \n"
+                + "where v.fk_idcliente=c.idcliente \n"+filtro
+                + " order by v.idventa desc;";
+        String titulonota = "VENTAS FECHA CLIENTE";
+        String direccion = "src/REPORTE/VENTA/repVentaFechaCliente.jrxml";
+        rep.imprimirjasper(conn, sql, titulonota, direccion);
     }
 }

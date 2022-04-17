@@ -21,7 +21,7 @@ public class DAO_item_venta {
     EvenJasperReport rep = new EvenJasperReport();
     EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
     EvenFecha evefec = new EvenFecha();
-    private Global_datos gda=new Global_datos();
+    private Global_datos gda = new Global_datos();
     private String mensaje_insert = "ITEM_VENTA GUARDADO CORRECTAMENTE";
     private String mensaje_update = "ITEM_VENTA MODIFICADO CORECTAMENTE";
     private String sql_insert = "INSERT INTO item_venta(iditem_venta,fecha_creado,creado_por,orden,es_producto,es_servicio,"
@@ -135,22 +135,24 @@ public class DAO_item_venta {
     }
 
     public void ancho_tabla_item_venta(JTable tbltabla) {
-        int Ancho[] = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,1};
+        int Ancho[] = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1};
         evejt.setAnchoColumnaJtable(tbltabla, Ancho);
     }
-    private boolean getboo_convertir(String texto){
-        boolean convertir=false;
-        if(texto.equals("T")){
-            convertir=true;
+
+    private boolean getboo_convertir(String texto) {
+        boolean convertir = false;
+        if (texto.equals("T")) {
+            convertir = true;
         }
         return convertir;
     }
-    public void insertar_item_venta_de_tabla(Connection conn, JTable tblitem_producto,venta ven) {
-        item_venta iven=new item_venta();
-        funcionario_comision ENTfc=new funcionario_comision();
-        DAO_funcionario_comision DAOfc=new DAO_funcionario_comision();
-        DAO_funcionario_grupo_comision DAOfgc=new DAO_funcionario_grupo_comision();
-        DAO_producto DAOpro=new DAO_producto();
+
+    public void insertar_item_venta_de_tabla(Connection conn, JTable tblitem_producto, venta ven) {
+        item_venta iven = new item_venta();
+        funcionario_comision ENTfc = new funcionario_comision();
+        DAO_funcionario_comision DAOfc = new DAO_funcionario_comision();
+        DAO_funcionario_grupo_comision DAOfgc = new DAO_funcionario_grupo_comision();
+        DAO_producto DAOpro = new DAO_producto();
         for (int row = 0; row < tblitem_producto.getRowCount(); row++) {
             String ord = ((tblitem_producto.getModel().getValueAt(row, 0).toString()));
             String tipo = ((tblitem_producto.getModel().getValueAt(row, 1).toString()));
@@ -169,7 +171,7 @@ public class DAO_item_venta {
             String monto_comision = ((tblitem_producto.getModel().getValueAt(row, 14).toString()));
             String precio_compra = ((tblitem_producto.getModel().getValueAt(row, 15).toString()));
             String cliente = ((tblitem_producto.getModel().getValueAt(row, 16).toString()));
-            int idfuncionario=Integer.parseInt(fk_idfuncionario);
+            int idfuncionario = Integer.parseInt(fk_idfuncionario);
             try {
                 iven.setC3creado_por(gda.getCreado_por());
                 iven.setC4orden(Integer.parseInt(ord));
@@ -187,14 +189,14 @@ public class DAO_item_venta {
                 iven.setC16fk_idfuncionario(idfuncionario);
                 iven.setC17monto_comision(Double.parseDouble(monto_comision));
                 insertar_item_venta(conn, iven);
-                DAOpro.update_stock_actual_producto(conn, cant, fk_idproducto);
+                DAOpro.update_stock_actual_producto_descontar(conn, cant, fk_idproducto);
                 //**FUNCIONARIO COMISION
-                int idfuncionario_grupo_comision=DAOfgc.getInt_id_abierto_funcionario_grupo_comision(conn,idfuncionario);
+                int idfuncionario_grupo_comision = DAOfgc.getInt_id_abierto_funcionario_grupo_comision(conn, idfuncionario);
                 ENTfc.setC3creado_por(gda.getCreado_por());
                 ENTfc.setC5monto_comision(Double.parseDouble(monto_comision));
                 ENTfc.setC6monto_pagado(0);
                 ENTfc.setC7estado(gda.getEstado_abierto());
-                ENTfc.setC8descripcion(descripcion+"=>Cli:"+cliente);
+                ENTfc.setC8descripcion(descripcion + "=>Cli:" + cliente);
                 ENTfc.setC9es_pagado(false);
                 ENTfc.setC10fk_idfuncionario_grupo_comision(idfuncionario_grupo_comision);
                 ENTfc.setC11fk_iditem_venta(iven.getC1iditem_venta());
@@ -202,12 +204,19 @@ public class DAO_item_venta {
                 ENTfc.setC13fk_idventa(ven.getC1idventa());
                 DAOfc.insertar_funcionario_comision(conn, ENTfc);
                 DAOfc.update_total_comision_funcionario(conn, idfuncionario);
-                
+
             } catch (Exception e) {
                 evemen.mensaje_error(e, "insertar_item_venta_de_tabla");
                 break;
             }
-            
+
         }
+    }
+
+    public void anular_item_venta(Connection conn, int fk_idventa) {
+        String sql = "update producto set stock_actual=(stock_actual+iv.cantidad)\n"
+                + "from item_venta iv\n"
+                + "where iv.es_producto=true and idproducto=iv.fk_idproducto and iv.fk_idventa="+fk_idventa;
+        eveconn.SQL_execute_libre(conn, sql);
     }
 }

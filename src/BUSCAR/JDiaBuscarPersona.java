@@ -12,6 +12,7 @@ import Evento.Color.cla_color_palete;
 import Evento.JTextField.EvenJTextField;
 import Evento.Jframe.EvenJFRAME;
 import Evento.Jtable.EvenJtable;
+import FORMULARIO.VISTA.FrmCompra;
 import FORMULARIO.VISTA.FrmGasto;
 import FORMULARIO.VISTA.FrmProducto;
 import FORMULARIO.VISTA.FrmServicio;
@@ -34,12 +35,16 @@ public class JDiaBuscarPersona extends javax.swing.JDialog {
     private EvenJTextField evejtf = new EvenJTextField();
     Connection conn = ConnPostgres.getConnPosgres();
     cla_color_palete clacolor = new cla_color_palete();
-    private ClaVarBuscar vbus = new ClaVarBuscar();
-    private String punto_si="TIENE PUNTAJE";
-    private String punto_no="NO TIENE PUNTO";
+    ClaVarBuscar vbus = new ClaVarBuscar();
+    private String punto_si = "TIENE PUNTAJE";
+    private String punto_no = "NO TIENE PUNTO";
+
     private void abrir_formulario() {
         this.setTitle("BUSCAR " + vbus.getNombre_tabla());
-
+        inicio_actualizar_buscar();
+        
+    }
+    private void inicio_actualizar_buscar(){
         if (vbus.getTipo_tabla() == 1) {
             txtbuscar_nombre.setText(vbus.getPre_busqueda());
             actualizar_buscar(txtbuscar_nombre, "c.nombre");
@@ -50,25 +55,59 @@ public class JDiaBuscarPersona extends javax.swing.JDialog {
             actualizar_buscar(txtbuscar_ruc, "c.ruc");
             txtbuscar_ruc.grabFocus();
         }
+        if (vbus.getTipo_tabla() == 3) {
+            txtbuscar_nombre.setText(vbus.getPre_busqueda());
+            actualizar_buscar(txtbuscar_nombre, "p.razon_social");
+            txtbuscar_nombre.grabFocus();
+        }
+        if (vbus.getTipo_tabla() == 4) {
+            txtbuscar_ruc.setText(vbus.getPre_busqueda());
+            actualizar_buscar(txtbuscar_ruc, "p.ruc");
+            txtbuscar_ruc.grabFocus();
+        }
     }
-
+    private void campo_actualizar_buscar(int tipo){
+        if (vbus.getTipo_tabla() == 1 && tipo==1) {
+            actualizar_buscar(txtbuscar_nombre, "c.nombre");
+        }
+        if (vbus.getTipo_tabla() == 2 && tipo==2) {
+            actualizar_buscar(txtbuscar_ruc, "c.ruc");
+        }
+        if (vbus.getTipo_tabla() == 3 && tipo==1) {
+            actualizar_buscar(txtbuscar_nombre, "p.razon_social");
+        }
+        if (vbus.getTipo_tabla() == 4 && tipo==2) {
+            actualizar_buscar(txtbuscar_ruc, "p.ruc");
+        }
+    }
     private void actualizar_buscar(JTextField txttexto, String campo) {
         String sql = "";
         String buscar = txttexto.getText();
-        int Ancho[] = {5, 70, 10, 15, 1, 1,1,1};
+        int Ancho[] = {5, 70, 10, 15, 1, 1, 1, 1};
+        int Ancho2[] = {5,40, 10, 15,30};
         int cant_columna = 0;
         if (vbus.getTipo_tabla() == 1 || vbus.getTipo_tabla() == 2) {
             cant_columna = 8;
             sql = "select c.idcliente as idc,(c.nombre||' '||c.apellido) as cliente,\n"
                     + "c.ruc,c.telefono,c.direccion,c.fk_idconfiguracion_puntaje as idcp,  \n"
-                    + "case when c.tiene_puntaje=true then '"+punto_si+"' else '"+punto_no+"' end as tiene_puntaje,\n"
+                    + "case when c.tiene_puntaje=true then '" + punto_si + "' else '" + punto_no + "' end as tiene_puntaje,\n"
                     + "TRIM(to_char(c.total_puntaje,'99')) as total_puntaje "
                     + "from cliente c \n"
                     + "where c.activo=true\n"
                     + "and " + campo + " ilike'%" + buscar + "%' "
                     + "order by c.nombre desc;";
         }
-
+        if (vbus.getTipo_tabla() == 3 || vbus.getTipo_tabla() == 4) {
+            cant_columna = 4;
+            sql = "select p.idproveedor as idp,\n"
+                    + "(p.razon_social) as proveedor,\n"
+                    + "p.ruc as ruc,\n"
+                    + "p.telefono as telefono,p.direccion \n"
+                    + "from proveedor p \n"
+                    + "where p.activo=true "
+                    + "and " + campo + " ilike'%" + buscar + "%' "
+                    + "order by p.razon_social desc;";
+        }
         if (cant_columna == 8) {
             eveconn.Select_cargar_jtable(conn, sql, tblbuscar);
             eveJtab.setAnchoColumnaJtable(tblbuscar, Ancho);
@@ -76,6 +115,10 @@ public class JDiaBuscarPersona extends javax.swing.JDialog {
             eveJtab.ocultar_columna(tblbuscar, 5);
             eveJtab.ocultar_columna(tblbuscar, 6);
             eveJtab.ocultar_columna(tblbuscar, 7);
+        }
+        if (cant_columna == 4) {
+            eveconn.Select_cargar_jtable(conn, sql, tblbuscar);
+            eveJtab.setAnchoColumnaJtable(tblbuscar, Ancho2);
         }
     }
 
@@ -96,14 +139,14 @@ public class JDiaBuscarPersona extends javax.swing.JDialog {
                 FrmVenta.txtcli_direccion.setText(direccion);
                 FrmVenta.lbltiene_puntaje.setText(tiene_puntaje);
                 FrmVenta.txtcli_total_puntaje.setText(total_puntaje);
-                if(tiene_puntaje.equals(punto_si)){
+                if (tiene_puntaje.equals(punto_si)) {
                     FrmVenta.lbltiene_puntaje.setForeground(Color.ORANGE);
                     FrmVenta.txtcli_total_puntaje.setBackground(Color.ORANGE);
                     FrmVenta.setGenera_puntaje(true);
                     FrmVenta.jCgenerar_puntaje.setVisible(true);
                     FrmVenta.jCgenerar_puntaje.setSelected(true);
                 }
-                if(tiene_puntaje.equals(punto_no)){
+                if (tiene_puntaje.equals(punto_no)) {
                     FrmVenta.lbltiene_puntaje.setForeground(Color.RED);
                     FrmVenta.txtcli_total_puntaje.setBackground(Color.RED);
                     FrmVenta.setGenera_puntaje(false);
@@ -114,6 +157,18 @@ public class JDiaBuscarPersona extends javax.swing.JDialog {
                 FrmVenta.setFk_idcliente(idc);
                 FrmVenta.setFk_idconfiguracion_puntaje(idconfiguracion_puntaje);
             }
+            if (vbus.getTipo_tabla() == 3 || vbus.getTipo_tabla() == 4) {
+                int idproveedor = eveJtab.getInt_select_id(tblbuscar);
+                String proveedor = eveJtab.getString_select(tblbuscar, 1);
+                String ruc = eveJtab.getString_select(tblbuscar, 2);
+                String telefono = eveJtab.getString_select(tblbuscar, 3);
+                String direccion = eveJtab.getString_select(tblbuscar, 4);
+                FrmCompra.setFk_idproveedor(idproveedor);
+                FrmCompra.txtprov_nombre.setText(proveedor);
+                FrmCompra.txtprov_ruc.setText(ruc);
+                FrmCompra.txtprov_direccion.setText(direccion);
+                FrmCompra.txtprov_telefono.setText(telefono);
+            }
 
         }
     }
@@ -123,7 +178,10 @@ public class JDiaBuscarPersona extends javax.swing.JDialog {
             FrmVenta.tblservicio_categoria.changeSelection(0, 0, false, false);
             FrmVenta.tblservicio_categoria.grabFocus();
         }
-
+        if (vbus.getTipo_tabla() == 3 || vbus.getTipo_tabla() == 4) {
+//            FrmVenta.tblservicio_categoria.changeSelection(0, 0, false, false);
+//            FrmVenta.tblservicio_categoria.grabFocus();
+        }
     }
 
     public JDiaBuscarPersona(java.awt.Frame parent, boolean modal) {
@@ -273,7 +331,7 @@ public class JDiaBuscarPersona extends javax.swing.JDialog {
 
     private void txtbuscar_nombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbuscar_nombreKeyReleased
         // TODO add your handling code here:
-        actualizar_buscar(txtbuscar_nombre, "c.nombre");
+        campo_actualizar_buscar(1);
     }//GEN-LAST:event_txtbuscar_nombreKeyReleased
 
     private void txtbuscar_nombreKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbuscar_nombreKeyPressed
@@ -321,7 +379,7 @@ public class JDiaBuscarPersona extends javax.swing.JDialog {
 
     private void txtbuscar_rucKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbuscar_rucKeyReleased
         // TODO add your handling code here:
-        actualizar_buscar(txtbuscar_ruc, "c.ruc");
+        campo_actualizar_buscar(2);
     }//GEN-LAST:event_txtbuscar_rucKeyReleased
 
     /**

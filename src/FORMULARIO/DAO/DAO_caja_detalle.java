@@ -178,7 +178,7 @@ public class DAO_caja_detalle {
         eveconn.SQL_execute_libre(conn, sql_update_cerrartodo);
     }
     public void anular_venta_update_caja_detalle(Connection conn, caja_detalle cjdet) {
-        String titulo = "update_caja_detalle";
+        String titulo = "anular_venta_update_caja_detalle";
         String sql_update = "UPDATE caja_detalle SET estado=?,cierre=? WHERE fk_idventa=?;";
         PreparedStatement pst = null;
         try {
@@ -186,6 +186,22 @@ public class DAO_caja_detalle {
             pst.setString(1, cjdet.getC6estado());
             pst.setString(2, cjdet.getC8cierre());
             pst.setInt(3, cjdet.getC14fk_idventa());
+            pst.execute();
+            pst.close();
+            evemen.Imprimir_serial_sql(sql_update + "\n" + cjdet.toString(), titulo);
+        } catch (Exception e) {
+            evemen.mensaje_error(e, sql_update + "\n" + cjdet.toString(), titulo);
+        }
+    }
+    public void anular_compra_update_caja_detalle(Connection conn, caja_detalle cjdet) {
+        String titulo = "anular_compra_update_caja_detalle";
+        String sql_update = "UPDATE caja_detalle SET estado=?,cierre=? WHERE fk_idcompra=?;";
+        PreparedStatement pst = null;
+        try {
+            pst = conn.prepareStatement(sql_update);
+            pst.setString(1, cjdet.getC6estado());
+            pst.setString(2, cjdet.getC8cierre());
+            pst.setInt(3, cjdet.getC17fk_idcompra());
             pst.execute();
             pst.close();
             evemen.Imprimir_serial_sql(sql_update + "\n" + cjdet.toString(), titulo);

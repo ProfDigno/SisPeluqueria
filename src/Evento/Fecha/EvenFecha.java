@@ -37,13 +37,23 @@ public class EvenFecha {
     }
 
     private String formato_fecha = "yyyy-MM-dd";
-    String fecha_dia1 = "yyyy-MM-01";
-    String formato_fechaHora = "yyyy-MM-dd HH:mm";
+    private String fecha_dia1 = "yyyy-MM-01";
+    private String formato_fechaHora = "yyyy-MM-dd HH:mm";
     private String formato_hora = "HH:mm:ss";
-    String formato_fechaHoraZona = "yyyy-MM-dd HH:mm:ss.00";
-    EvenConexion eveconn = new EvenConexion();
-    EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
+    private String formato_fechaHoraZona = "yyyy-MM-dd HH:mm:ss.00";
+    private static String psql_fec_hs = "yyyy-MM-dd HH24:MI";
+    private static String psql_fec = "yyyy-MM-dd";
+    private EvenConexion eveconn = new EvenConexion();
+    private EvenMensajeJoptionpane evemen = new EvenMensajeJoptionpane();
 
+    public static String getPsql_fec_hs() {
+        return psql_fec_hs;
+    }
+
+    public static String getPsql_fec() {
+        return psql_fec;
+    }
+    
     public String getString_validar_fecha(String fechaStr) {
         String Sfecha = "";
         try {
