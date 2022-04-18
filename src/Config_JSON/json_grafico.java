@@ -23,6 +23,7 @@ public class json_grafico {
     private String ruta_json = "JSON\\json_grafico.json";
     private EvenFecha evefec = new EvenFecha();
     private static String top_producto_vendido;
+    private static String top_servicio_vendido;
     private json_config_json jsoncf=new json_config_json();
 
     public void cargar_jsom_grafico() {
@@ -32,8 +33,9 @@ public class json_grafico {
             Object obj = parser.parse(new FileReader(ruta_json));
             JSONObject jsonObject = (JSONObject) obj;
             String top_producto_vendido = (String) jsonObject.get("top_producto_vendido");
+            String top_servicio_vendido = (String) jsonObject.get("top_servicio_vendido");
             setTop_producto_vendido((top_producto_vendido));
-            
+            setTop_servicio_vendido(top_servicio_vendido);
             System.out.println(titulo + jsonObject);
         } catch (Exception ex) {
             System.err.println(titulo+"\nError: " + ex.toString());
@@ -52,6 +54,14 @@ public class json_grafico {
 
     public static void setTop_producto_vendido(String top_producto_vendido) {
         json_grafico.top_producto_vendido = top_producto_vendido;
+    }
+
+    public static String getTop_servicio_vendido() {
+        return top_servicio_vendido;
+    }
+
+    public static void setTop_servicio_vendido(String top_servicio_vendido) {
+        json_grafico.top_servicio_vendido = top_servicio_vendido;
     }
 
     
